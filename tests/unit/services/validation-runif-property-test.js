@@ -188,4 +188,99 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
       });
   });
 
+  it('should run - on 1 function', function (done) {
+    let service = this.subject();
+
+    let assertValidatorRun = 0;
+
+    var validationObject = Ember.Controller.extend(AdvValidable, {
+      validations: [
+        {
+          fields: 'field1',
+          validator: 'test-validator',
+          runIf: function () {
+            return true;
+          }
+        }
+      ],
+      field1: 'test',
+
+      runProperty: true
+    }).create();
+
+
+    let testValidator = Ember.Service.extend(AdvValidator, {
+      validate: function () {
+        assertValidatorRun++;
+        return false;
+      },
+      isAsync: false
+    });
+
+    this.register('validator:test-validator', testValidator);
+
+    let validationResult = service.validateObject(validationObject);
+    expect(validationResult).to.exist;
+    validationResult
+      .then((result) => {
+        expect(result).to.exist;
+        expect(result.length).to.equal(1);
+        expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));
+        expect(assertValidatorRun).to.equal(1);
+        done();
+      })
+      .catch((e) => {
+        done(e);
+      });
+  });
+
+  it('should run - on 1 function + parameter', function (done) {
+    let service = this.subject();
+
+    let assertValidatorRun = 0;
+
+    var validationObject = Ember.Controller.extend(AdvValidable, {
+      validations: [
+        {
+          fields: 'field1',
+          validator: 'test-validator',
+          runIf: [
+            'field2',
+            function (f1) {
+              return f1 === 'runMe';
+            }
+          ]
+        }
+      ],
+      field1: 'test',
+      field2: 'runMe',
+
+      runProperty: true
+    }).create();
+
+
+    let testValidator = Ember.Service.extend(AdvValidator, {
+      validate: function () {
+        assertValidatorRun++;
+        return false;
+      },
+      isAsync: false
+    });
+
+    this.register('validator:test-validator', testValidator);
+
+    let validationResult = service.validateObject(validationObject);
+    expect(validationResult).to.exist;
+    validationResult
+      .then((result) => {
+        expect(result).to.exist;
+        expect(result.length).to.equal(1);
+        expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));
+        expect(assertValidatorRun).to.equal(1);
+        done();
+      })
+      .catch((e) => {
+        done(e);
+      });
+  });
 });

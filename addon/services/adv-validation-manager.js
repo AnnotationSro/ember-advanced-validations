@@ -94,7 +94,17 @@ export default Ember.Service.extend({
     if (!Array.isArray(conditionFields)){
       conditionFields = [conditionFields];
     }
-    return _.every(conditionFields.map((field)=>!!validationObject.get(field)));
+
+
+    //check if it is a run condition with function (last element in array must be a function)
+    if (typeof conditionFields[conditionFields.length - 1] === 'function') {
+      let conditionFunction = conditionFields[conditionFields.length - 1];
+      let conditionArguments = conditionFields.slice(0, conditionFields.length - 1).map((field) => validationObject.get(field));
+      return conditionFunction(...conditionArguments);
+    } else {
+      //nope, just a simple array with properties
+      return _.every(conditionFields.map((field)=>!!validationObject.get(field)));
+    }
 
   },
 
