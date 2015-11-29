@@ -30,9 +30,14 @@ export default Ember.Service.extend({
       let fields = fieldValidation['fields'];
       let validatorArray = fieldValidation['validator'];
       let validationMessage = fieldValidation['validationMessage'];
+      let runIfFields = fieldValidation['runIf'];
 
       Ember.assert('No fields defined for validation', Ember.isPresent(fields));
       Ember.assert('No validator defined for validation', Ember.isPresent(fields));
+
+      if (!this._canRunValidation(emberObject, runIfFields)) {
+        return;
+      }
 
       //get values for validation field/fields
       let validatorFields = [];
@@ -82,6 +87,22 @@ export default Ember.Service.extend({
     return new Ember.RSVP.all(validationPromises);
   },
 
+  _canRunValidation(validationObject, conditionFields){
+    if (Ember.isEmpty(conditionFields)) {
+      return true;
+    }
+    if (!Array.isArray(conditionFields)){
+      conditionFields = [conditionFields];
+    }
+    return _.every(conditionFields.map((field)=>!!validationObject.get(field)));
+
+  },
+
+  /**
+   * Returns validator that can be actually run.
+   * @return validator AdvValidator
+   * @private
+   */
   _getValidationDefinition(validatorDef) {
 
     if (Ember.typeOf(validatorDef) === 'string') {
