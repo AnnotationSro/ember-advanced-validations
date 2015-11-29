@@ -1,6 +1,17 @@
 # Ember-advanced-validations
 
-This README outlines the details of collaborating on this Ember addon.
+Advanced validation framework for EmberJS.
+
+
+_**More information about the validations TBD**_
+
+
+Created with ♥ by Annotation
+
+
+# Development instructions
+
+If you want to contribute to this project, you can either open a new issue or create a pull request. Either way, we will greatly appreciate your help 😊.
 
 ## Installation
 
