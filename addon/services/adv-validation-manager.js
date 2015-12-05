@@ -10,88 +10,182 @@ export default Ember.Service.extend({
    * Explicit call to validate an Ember object (Controller, Component, Model,...)
    *
    * {
+   *   id: [required only if you want to use "dependsOn"]
    *   fields:
    *   validator:
    *   validationMessage:
+   *   dependsOn:
    * }
    *
    * @param  {any Ember object} emberObject Ember object to validate
    * @return {Promise} validation result
    * @public
    */
-    validateObject(emberObject) {
+  validateObject(emberObject) {
     Ember.assert("Cannot validate null or undefined object", Ember.isPresent(emberObject));
     let allFieldValidations = emberObject.get('validations');
     let validationPromises = [];
 
+    //array of validations to be run -> to start an awaiting validations execute them as functions (since elements in this array are functions)
+    let awaitingValidations = [];
 
-    allFieldValidations.forEach((fieldValidation) => {
-
-      let fields = fieldValidation['fields'];
-      let validatorArray = fieldValidation['validator'];
-      let validationMessage = fieldValidation['validationMessage'];
-      let runIfFields = fieldValidation['runIf'];
-
-      Ember.assert('No fields defined for validation', Ember.isPresent(fields));
-      Ember.assert('No validator defined for validation', Ember.isPresent(fields));
-
-      if (!this._canRunValidation(emberObject, runIfFields)) {
-        return;
-      }
-
-      //get values for validation field/fields
-      let validatorFields = [];
-      if (Ember.isArray(fields)) {
-        validatorFields = fields.map((f) => emberObject.get(f));
-      } else {
-        validatorFields.push(emberObject.get(fields));
-      }
-
-      if (!Array.isArray(validatorArray)) {
-        validatorArray = [validatorArray];
-      }
-
-      let fieldValidations = [];
-      validatorArray.forEach((validator) => {
-        //get validation definition
-        let validationDef = this._getValidationDefinition(validator);
-        let config = {};
-        if (fieldValidation.config) {
-          //if there is just one validation, the whole config belongs to this validation
-          if (validatorArray.length === 1) {
-            config = fieldValidation.config;
-          } else {
-            config = fieldValidation.config[validator] || fieldValidation.config;
-          }
-        }
-        let singleValidation = this._runValidation(validationDef, validatorFields, config, validationMessage);
-        fieldValidations.push(singleValidation);
-      });
+    let validationResult = [];
 
 
-      let singleFieldValidation = new Ember.RSVP.Promise((resolve, reject) => {
-
-        //check if all validations on this field are true - only then resolve this field as valid
-        new Ember.RSVP.all(fieldValidations).then((result) => {
-          resolve({fields: fields, result: _.filter(result, (r) => r !== true)});
-
-        }).catch(reject);
-
-      });
-
-
-      //run all validations for this field
-      validationPromises.push(singleFieldValidation);
+    let resolveValidationPromise, rejectValidationPromise;
+    let validationDonePromise = new Ember.RSVP.Promise((resolve, reject) => {
+      resolveValidationPromise = resolve;
+      rejectValidationPromise = reject;
     });
 
-    return new Ember.RSVP.all(validationPromises);
+
+    //map of validations that were already resolved with a validation result (true/false)
+    //key = validationID, value=true/false
+    //validations without ID won't be in this map
+    let validationResultMap = {};
+
+
+    if (Ember.isEmpty(allFieldValidations)) {
+      resolveValidationPromise(validationResult);
+    }else {
+
+      allFieldValidations.forEach((fieldValidation) => {
+        let dependsOnValidations = fieldValidation['dependsOn'];
+        if (this._validationDependenciesResolved(dependsOnValidations, validationResultMap)) {
+          this._runSingleValidation(emberObject, fieldValidation, resolveValidationPromise, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult);
+        } else {
+          awaitingValidations.push(()=> {
+            this._runSingleValidation(emberObject, fieldValidation, resolveValidationPromise, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult);
+          });
+        }
+      });
+
+      if (Ember.isEmpty(validationPromises)){
+        //there are actually no validations to be run (e.g. none of them are able to run due to "runIf" restrictions)
+        resolveValidationPromise(validationResult);
+      }
+    }
+
+    return validationDonePromise;
+  },
+
+  _findAvailableWaitingValidations(awaitingValidations, validationResultMap){
+    return _.filter(awaitingValidations, (validation) => {
+      let dependsOn = validation['dependsOn'];
+      return this._validationDependenciesResolved(dependsOn, validationResultMap);
+    });
+  },
+
+  _validationDependenciesResolved(dependsOnValidations, validationResultMap){
+    if (Ember.isEmpty(dependsOnValidations)){
+      return true;
+    }else {
+      return _.every(dependsOnValidations, (d) => {
+        return validationResultMap[d];
+      });
+    }
+  },
+
+  _runSingleValidation: function (emberObject, fieldValidation, resolveValidationPromise, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult) {
+    let fields = fieldValidation['fields'];
+    let validatorArray = fieldValidation['validator'];
+    let validationMessage = fieldValidation['validationMessage'];
+    let runIfFields = fieldValidation['runIf'];
+    let validatorId = fieldValidation['id'];
+
+    Ember.assert('No fields defined for validation', Ember.isPresent(fields));
+    Ember.assert('No validator defined for validation', Ember.isPresent(fields));
+
+    if (Ember.isNone(fields) || Ember.isNone(fields)) {
+      rejectValidationPromise();
+      return;
+    }
+
+    if (!this._canRunValidation(emberObject, runIfFields)) {
+      return;
+    }
+    var singleFieldValidation = this._createSingleFieldValidation(fields, emberObject, validatorArray, fieldValidation, validationMessage);
+
+    validationPromises.push(singleFieldValidation);
+
+    //when field validation finishes, check if there are any depended validations waiting for this to be resolved
+    singleFieldValidation.then((result) => {
+
+      //remember te result
+      validationResult.push(result);
+
+
+      //remember the result of validation
+      if (Ember.isPresent(validatorId)) {
+        Ember.assert(`There are multiple validators with the same ID ${validatorId} - this may cause nondeterministic behaviour.`, Ember.isNone(validationResultMap[validatorId]));
+        validationResultMap[validatorId] = result;
+      }
+
+      //remove currently done validation from list of running field validations
+      var indexValidation = validationPromises.indexOf(singleFieldValidation);
+        if (indexValidation !== -1){
+        validationPromises.splice(indexValidation, 1);
+      }
+
+      let validationsToBeRun = this._findAvailableWaitingValidations(awaitingValidations, validationResultMap);
+      if (Ember.isEmpty(validationsToBeRun) && Ember.isEmpty(validationPromises)) {
+        //there are no running and no awaiting validations => this is the end, my friend
+        resolveValidationPromise(validationResult);
+      } else {
+        //run all validations that can be run
+        validationsToBeRun.forEach((validation) => validation());
+      }
+    });
+  },
+
+  _createSingleFieldValidation: function (fields, emberObject, validatorArray, fieldValidation, validationMessage) {
+    //get values for validation field/fields
+    let validatorFields = [];
+    if (Ember.isArray(fields)) {
+      validatorFields = fields.map((f) => emberObject.get(f));
+    } else {
+      validatorFields.push(emberObject.get(fields));
+    }
+
+    if (!Array.isArray(validatorArray)) {
+      validatorArray = [validatorArray];
+    }
+
+    let fieldValidations = [];
+    validatorArray.forEach((validator) => {
+      //get validation definition
+      let validationDef = this._getValidationDefinition(validator);
+      let config = {};
+      if (fieldValidation.config) {
+        //if there is just one validation, the whole config belongs to this validation
+        if (validatorArray.length === 1) {
+          config = fieldValidation.config;
+        } else {
+          config = fieldValidation.config[validator] || fieldValidation.config;
+        }
+      }
+      let singleValidation = this._runValidation(validationDef, validatorFields, config, validationMessage);
+      fieldValidations.push(singleValidation);
+    });
+
+
+    let singleFieldValidation = new Ember.RSVP.Promise((resolve, reject) => {
+
+      //check if all validations on this field are true - only then resolve this field as valid
+      new Ember.RSVP.all(fieldValidations).then((result) => {
+        resolve({fields: fields, result: _.filter(result, (r) => r !== true)});
+
+      }).catch(reject);
+
+    });
+    return singleFieldValidation;
   },
 
   _canRunValidation(validationObject, conditionFields){
     if (Ember.isEmpty(conditionFields)) {
       return true;
     }
-    if (!Array.isArray(conditionFields)){
+    if (!Array.isArray(conditionFields)) {
       conditionFields = [conditionFields];
     }
 
@@ -139,8 +233,8 @@ export default Ember.Service.extend({
     if (validator.get('isAsync')) {
       validationPromise = new Ember.RSVP.Promise((resolve, reject) => {
         validator.validate(config, ...fields).then((result) => {
-          this._handleValidationResult(result, fields, config, validator, userDefinedValidationMessage, resolve, reject);
-        })
+            this._handleValidationResult(result, fields, config, validator, userDefinedValidationMessage, resolve, reject);
+          })
           .catch((err) => reject(err));
 
       });
@@ -193,15 +287,15 @@ export default Ember.Service.extend({
    *
    * Configuration parameters can be also used in validationMessage - use a placeholder's syntax: {config.parameterName}
    */
-    _formatValidationMessage(validationMessage, args, config, i18n){
-    let formatted ;
+  _formatValidationMessage(validationMessage, args, config, i18n){
+    let formatted;
 
-    if (Ember.isPresent(i18n)){
+    if (Ember.isPresent(i18n)) {
       formatted = i18n.t(validationMessage);
-      if (formatted instanceof Ember.Handlebars.SafeString){
+      if (formatted instanceof Ember.Handlebars.SafeString) {
         formatted = formatted.string;
       }
-    }else{
+    } else {
       formatted = validationMessage;
     }
 
