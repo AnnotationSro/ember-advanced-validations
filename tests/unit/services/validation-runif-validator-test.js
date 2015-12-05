@@ -1,4 +1,3 @@
-/*
 import { expect } from 'chai';
 import { describeModule, it } from 'ember-mocha';
 
@@ -7,7 +6,7 @@ import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 import AdvValidator from 'ember-advanced-validations/mixins/adv-validator';
 
 
-describeModule('service:adv-validation-manager', 'Unit : Service : adv validation manager - runIf configuration', {
+describeModule('service:adv-validation-manager', 'Unit : Service : adv validation manager - dependsOns', {
   // Specify the other units that are required for this test.
 }, function () {
 
@@ -26,7 +25,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
         },
 
         {
-          id:'my super validator',
+          id: 'my super validator',
           fields: 'field2',
           validator: 'test-validator'
         }
@@ -53,8 +52,9 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
     validationResult
       .then((result) => {
         expect(result).to.exist;
-        expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: []}, JSON.stringify(result[0]));
+        expect(result.length).to.equal(2);
+        expect(result[0]).to.deep.equal({fields: 'field2', result: []}, JSON.stringify(result[0]));
+        expect(result[1]).to.deep.equal({fields: 'field1', result: []}, JSON.stringify(result[1]));
         expect(assertValidatorRun).to.equal(2);
         done();
       })
@@ -65,4 +65,3 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
 
 
 });
-*/

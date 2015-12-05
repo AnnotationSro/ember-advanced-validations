@@ -112,17 +112,17 @@ export default Ember.Service.extend({
     singleFieldValidation.then((result) => {
 
       //remember te result
-      validationResult.push(result);
+      validationResult.push(result); //todo validationResult and ValidationResultMap can be merged together (or rather use validationResultMap instead)
 
 
       //remember the result of validation
       if (Ember.isPresent(validatorId)) {
         Ember.assert(`There are multiple validators with the same ID ${validatorId} - this may cause nondeterministic behaviour.`, Ember.isNone(validationResultMap[validatorId]));
-        validationResultMap[validatorId] = result;
+        validationResultMap[validatorId] = Ember.isEmpty(result.result); //when result is empty, validation is OK
       }
 
       //remove currently done validation from list of running field validations
-      var indexValidation = validationPromises.indexOf(singleFieldValidation);
+      let indexValidation = validationPromises.indexOf(singleFieldValidation);
         if (indexValidation !== -1){
         validationPromises.splice(indexValidation, 1);
       }
@@ -133,7 +133,16 @@ export default Ember.Service.extend({
         resolveValidationPromise(validationResult);
       } else {
         //run all validations that can be run
-        validationsToBeRun.forEach((validation) => validation());
+        validationsToBeRun.forEach((validation) => {
+          //remove validation from awaiting array
+          let indexValidation = awaitingValidations.indexOf(validation);
+          if (indexValidation !== -1){
+            awaitingValidations.splice(indexValidation, 1);
+          }
+
+          //run validation
+          validation();
+        });
       }
     });
   },
