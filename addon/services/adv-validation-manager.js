@@ -2,6 +2,13 @@ import Ember from 'ember';
 import AdvValidator from '../mixins/adv-validator';
 import _ from 'lodash/lodash';
 
+class AwaitingValidation {
+  constructor(dependsOn, validatorFn) {
+    this.dependsOn = dependsOn;
+    this.validatorFn = validatorFn;
+  }
+}
+
 export default Ember.Service.extend({
 
   i18n: Ember.inject.service('i18n'),
@@ -55,13 +62,11 @@ export default Ember.Service.extend({
           this._runSingleValidation(emberObject, fieldValidation, resolveValidationPromise, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult);
         } else {
 
-          awaitingValidations.push(
-            {
-              dependsOn: dependsOnValidations,
-              validatorFn: ()=> {
-                this._runSingleValidation(emberObject, fieldValidation, resolveValidationPromise, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult);
-              }
-            }
+          awaitingValidations.push(new AwaitingValidation(
+            dependsOnValidations,
+            ()=> {
+              this._runSingleValidation(emberObject, fieldValidation, resolveValidationPromise, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult);
+            })
           );
         }
       });
@@ -86,18 +91,15 @@ export default Ember.Service.extend({
     if (Ember.isEmpty(dependsOnValidations)) {
       return true;
     } else {
-
-      if (Array.isArray(dependsOnValidations)){
+      if (Array.isArray(dependsOnValidations)) {
         //there are multiple items in "dependsOn"
         return _.every(dependsOnValidations, (d) => {
           return validationResultMap[d];
         });
-      }else{
+      } else {
         //there is just one dependency in "dependsOn"
         return validationResultMap[dependsOnValidations];
       }
-
-
     }
   },
 
@@ -127,7 +129,7 @@ export default Ember.Service.extend({
     singleFieldValidation.then((result) => {
 
       //remember te result
-      validationResult.push(result); //todo validationResult and ValidationResultMap can be merged together (or rather use validationResultMap instead)
+      validationResult.push(result);
 
 
       //remember the result of validation
