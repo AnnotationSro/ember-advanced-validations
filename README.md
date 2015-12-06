@@ -1,23 +1,21 @@
 # Ember-advanced-validations
 
-Advanced validation framework for EmberJS.
-
-A quick summary of features provided by this framework:
+A quick summary of features provided by this validation framework:
 
 * Validate any Ember object, such as ember-data model, [Object](http://emberjs.com/api/classes/Ember.Object.html), [Controller] (http://emberjs.com/api/classes/Ember.Controller.html), .. basically anything
 * Apply pre-defined validations or easily **create your own** (and reuse them afterwards)
 * Configure validations
 * Run validations in async (by default - without the need to configure it)
-* Apply validations on multiple fields (e.g. when field1 is empty, field2 is required)
-* Apply multiple validations on the same field (e.g. this field must not be empty and it must be an integer and it must be greater than 10)
+* Apply validations on multiple fields _(e.g. when field1 is empty, field2 is required)_
+* Apply multiple validations on the same field _(e.g. this field must not be empty and it must be an integer and it must be greater than 10)_
 * Conditionally run validations
-    * based on simple conditions (e.g. when field1 equals some value, then run this validation) 
-    * based on other validations (e.g. run this validation only if these two validations pass) - this will eliminated unnecessary validations (why validate field for its value, when it is empty?)
+    * based on simple conditions _(e.g. when field1 equals some value, then run this validation)_
+    * based on other validations _(e.g. run this validation only if these two validations pass)_
 * Validation messages per field
     * Full support of i18n (via [ember-i18n addon](https://github.com/jamesarosen/ember-i18n))
     * Custom validation messages can override default ones provided by this framework    
  
-  
+
   
 # Usage
   
@@ -25,6 +23,7 @@ _**TBD**_
 
 
 ### Created with ♥ by Annotation
+
 
 
 # Development instructions
