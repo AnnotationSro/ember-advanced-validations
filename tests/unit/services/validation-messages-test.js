@@ -5,6 +5,7 @@ import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 import AdvValidator from 'ember-advanced-validations/mixins/adv-validator';
 import EnTranslations from 'ember-advanced-validations/locales/en/translations';
+import getOwner from 'ember-getowner-polyfill';
 
 
 describeModule('service:adv-validation-manager', 'Unit : Service : adv validation manager - validator message', {
@@ -30,7 +31,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
    */
 
   it('validates one field + module validator - custom validation message', function (done) {
-    initTestTranslations(this.container);
+    initTestTranslations(getOwner(this));
 
     let service = this.subject();
 
@@ -71,7 +72,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
 
 
   it('validates one field + module validator - async - default validation message', function (done) {
-    initTestTranslations(this.container);
+    initTestTranslations(getOwner(this));
 
     let service = this.subject();
 
@@ -116,7 +117,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
   });
 
   it('validates one field + module validator - async - custom validation message', function (done) {
-    initTestTranslations(this.container);
+    initTestTranslations(getOwner(this));
 
     let service = this.subject();
 
@@ -163,7 +164,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
   });
 
   it('formats validation message', function (done) {
-    initTestTranslations(this.container);
+    initTestTranslations(getOwner(this));
 
     let service = this.subject();
 
@@ -215,7 +216,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
   });
 
   it('formats validation message - with configuration parameters', function (done) {
-    initTestTranslations(this.container);
+    initTestTranslations(getOwner(this));
 
     let service = this.subject();
 
@@ -270,7 +271,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
   });
 
   it('overrides default validation message', function (done) {
-    initTestTranslations(this.container);
+    initTestTranslations(getOwner(this));
 
     let service = this.subject();
 

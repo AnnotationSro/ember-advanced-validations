@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import AdvValidator from '../mixins/adv-validator';
 import _ from 'lodash/lodash';
+import getOwner from 'ember-getowner-polyfill';
 
 class AwaitingValidation {
   constructor(dependsOn, validatorFn) {
@@ -278,8 +279,7 @@ export default Ember.Service.extend({
   },
 
   _getValidatorFromModule(validatorModuleName) {
-    let container = this.get('container');
-    let validatorModule = container.lookup(`validator:${validatorModuleName}`);
+    let validatorModule = getOwner(this).lookup(`validator:${validatorModuleName}`);
 
     Ember.assert(`Validator "validators:${validatorModuleName}" does not exist.`, Ember.isPresent(validatorModule));
     Ember.assert(`Validator ${validatorModuleName} does not implement mixin AdvValidator`, AdvValidator.detect(validatorModule));
@@ -295,7 +295,16 @@ export default Ember.Service.extend({
 
         let message = userDefinedValidationMessage || validator.validationMessage;
         if (Ember.isPresent(message)) {
-          resolve(this._formatValidationMessage(message, fields, config, this.get('i18n')));
+
+          let i18n = null;
+          try {
+            //this try/catch is a workaround for Ember Error: "registry.resolver.resolve is not a function"
+            //which happens when service i18n is not registered - I guess....:(
+            i18n = getOwner(this).lookup('service:i18n');
+          }catch(e){
+            //nothing, just leave i18n as null
+          }
+          resolve(this._formatValidationMessage(message, fields, config, i18n));
         } else {
           resolve(false);
         }
