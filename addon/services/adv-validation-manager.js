@@ -47,20 +47,26 @@ export default Ember.Service.extend({
 
     if (Ember.isEmpty(allFieldValidations)) {
       resolveValidationPromise(validationResult);
-    }else {
+    } else {
 
       allFieldValidations.forEach((fieldValidation) => {
         let dependsOnValidations = fieldValidation['dependsOn'];
         if (this._validationDependenciesResolved(dependsOnValidations, validationResultMap)) {
           this._runSingleValidation(emberObject, fieldValidation, resolveValidationPromise, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult);
         } else {
-          awaitingValidations.push(()=> {
-            this._runSingleValidation(emberObject, fieldValidation, resolveValidationPromise, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult);
-          });
+
+          awaitingValidations.push(
+            {
+              dependsOn: dependsOnValidations,
+              validatorFn: ()=> {
+                this._runSingleValidation(emberObject, fieldValidation, resolveValidationPromise, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult);
+              }
+            }
+          );
         }
       });
 
-      if (Ember.isEmpty(validationPromises)){
+      if (Ember.isEmpty(validationPromises)) {
         //there are actually no validations to be run (e.g. none of them are able to run due to "runIf" restrictions)
         resolveValidationPromise(validationResult);
       }
@@ -70,19 +76,28 @@ export default Ember.Service.extend({
   },
 
   _findAvailableWaitingValidations(awaitingValidations, validationResultMap){
-    return _.filter(awaitingValidations, (validation) => {
-      let dependsOn = validation['dependsOn'];
+    return _.filter(awaitingValidations, (awValidation) => {
+      let dependsOn = awValidation.dependsOn;
       return this._validationDependenciesResolved(dependsOn, validationResultMap);
     });
   },
 
   _validationDependenciesResolved(dependsOnValidations, validationResultMap){
-    if (Ember.isEmpty(dependsOnValidations)){
+    if (Ember.isEmpty(dependsOnValidations)) {
       return true;
-    }else {
-      return _.every(dependsOnValidations, (d) => {
-        return validationResultMap[d];
-      });
+    } else {
+
+      if (Array.isArray(dependsOnValidations)){
+        //there are multiple items in "dependsOn"
+        return _.every(dependsOnValidations, (d) => {
+          return validationResultMap[d];
+        });
+      }else{
+        //there is just one dependency in "dependsOn"
+        return validationResultMap[dependsOnValidations];
+      }
+
+
     }
   },
 
@@ -123,7 +138,7 @@ export default Ember.Service.extend({
 
       //remove currently done validation from list of running field validations
       let indexValidation = validationPromises.indexOf(singleFieldValidation);
-        if (indexValidation !== -1){
+      if (indexValidation !== -1) {
         validationPromises.splice(indexValidation, 1);
       }
 
@@ -136,12 +151,12 @@ export default Ember.Service.extend({
         validationsToBeRun.forEach((validation) => {
           //remove validation from awaiting array
           let indexValidation = awaitingValidations.indexOf(validation);
-          if (indexValidation !== -1){
+          if (indexValidation !== -1) {
             awaitingValidations.splice(indexValidation, 1);
           }
 
           //run validation
-          validation();
+          validation.validatorFn();
         });
       }
     });
