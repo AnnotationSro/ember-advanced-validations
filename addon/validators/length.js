@@ -16,7 +16,9 @@ import AdvValidator from '../mixins/adv-validator';
 export default Ember.Service.extend(AdvValidator, {
 
   validate: function (config, field) {
-    Ember.assert(`Cannot run length validation for null/undefined field: ${field}`, Ember.isPresent(field));
+    if (Ember.isNone(field)) {
+      field = '';
+    }
     Ember.assert('No configuration specified for length validation.', Ember.isPresent(config) && Object.keys(config).length > 0);
 
     let text = field.toString();
@@ -29,15 +31,15 @@ export default Ember.Service.extend(AdvValidator, {
 
     let result = false;
 
-    if (exact){
+    if (exact) {
       result = result || text.length === exact;
     }
 
-    if (min){
+    if (min) {
       result = result || text.length >= min;
     }
 
-    if (max){
+    if (max) {
       result = result || text.length <= max;
     }
 

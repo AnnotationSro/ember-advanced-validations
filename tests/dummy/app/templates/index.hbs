@@ -1,0 +1,79 @@
+<div>
+    <h3>Simple validation with direct validator function definition</h3>
+    <i>This field must not be empty</i>
+
+    <p>
+      {{input value=valueSimple}}
+        Valid: {{simpleValidation}}
+    </p>
+</div>
+
+<div>
+    <h3>Simple validation with predefined validator</h3>
+    <i>This field must not be empty</i>
+
+    <p>
+      {{input value=valuePredefined}}
+        Valid: {{predefinedValidation}}
+    </p>
+</div>
+
+<div>
+    <h3>Multi-field validation</h3>
+    <i>These fields must match</i>
+
+    <p>
+      {{input value=valueMulti1}}
+      {{input value=valueMulti2}}
+        Valid: {{multiValidation}}
+    </p>
+</div>
+
+<div>
+    <h3>Simple validation with configuration</h3>
+    <i>This field's length must not be more than 5 characters.</i>
+
+    <p>
+      {{input value=valueConfig}}
+        Valid: {{configValidation}}
+    </p>
+</div>
+
+<div>
+    <h3>Run multiple validators on the same field</h3>
+    <p>
+        <i>This field must be numeric AND minimum of 3 characters long</i>
+    </p>
+    <p>
+      {{input value=valueCombine}}
+        Valid: {{combineValidation}}
+    </p>
+</div>
+
+
+<div>
+    <h3>Conditionally run validation - based on simple condition</h3>
+  <p>
+      <i>This field must not be empty - but only when validation is enabled</i>
+    <div>
+        <label> {{input checked=runIfEnabled type="checkbox" name="enabled"}} Enable validation</label>
+    </div>
+    </p>
+    <p>
+      {{input value=valueRunIf}}
+        Valid: {{runIfValidation}}
+    </p>
+</div>
+
+<div>
+    <h3>Conditionally run validation - based on other validation</h3>
+    <p>
+        <i>This validation will run only if the validation above is valid</i>
+    </p>
+    <p>
+      {{input value=valueDependsOn}}
+        Valid: {{dependsOnValidation}}
+    </p>
+</div>
+
+<button {{action "validateAll"}}>Validate all fields</button>
