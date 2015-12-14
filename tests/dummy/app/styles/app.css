@@ -1,0 +1,10 @@
+.btn-validate{
+  padding: 10px;
+  background-color: lightblue;
+}
+
+.panel{
+  border: 1px ridge gray;
+  margin-bottom: 5px;
+  padding-left: 10px;
+}
