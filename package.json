@@ -1,6 +1,6 @@
 {
   "name": "ember-advanced-validations",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "description": "Advanced validation framework for ember-cli",
   "directories": {
     "doc": "doc",
