@@ -17,7 +17,7 @@ import AdvValidator from '../mixins/adv-validator';
  */
 export default Ember.Service.extend(AdvValidator, {
 
-  validate: function (config, field) {
+  validate: function (field, config) {
 
     Ember.assert(
       "Regex validation does not contain necessary configuration parameter 'regex'",

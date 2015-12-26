@@ -56,7 +56,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
 
 
         let testValidator = Ember.Service.extend(AdvValidator, {
-          validate: function (config) {
+          validate: function (field, config) {
             return config.length === 1 && config.favouriteJsFramework === 'EmberJS';
           },
           isAsync: false
@@ -85,7 +85,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
 
 
     let testValidator = Ember.Service.extend(AdvValidator, {
-      validate: function (config, arg) {
+      validate: function (arg, config) {
         return config['test-validator'] === 1 && arg === 'test';
       },
       isAsync: false

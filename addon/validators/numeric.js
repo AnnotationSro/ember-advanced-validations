@@ -6,7 +6,7 @@ import AdvValidator from '../mixins/adv-validator';
  */
 export default Ember.Service.extend(AdvValidator, {
 
-  validate: function (config, field) {
+  validate: function (field) {
     return Ember.$.isNumeric(field);
   },
 

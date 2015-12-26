@@ -31,7 +31,7 @@ export default Ember.Controller.extend({
   validations: [
     {
       fields: 'valueSimple',
-      validator: function (config, value) {
+      validator: function (value, config) {
         return Ember.isPresent(value);
       }
     },
@@ -43,7 +43,7 @@ export default Ember.Controller.extend({
 
     {
       fields: ['valueMulti1', 'valueMulti2'],
-      validator: function (config, value1, value2) {
+      validator: function (value1, value2, config) {
         return value1 === value2;
       }
     },

@@ -22,7 +22,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
         },
         {
           fields: 'field2',
-          validator: function(config, arg2) {
+          validator: function(arg2) {
             return arg2===42;
           }
         }
@@ -59,7 +59,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
         },
         {
           fields: 'field2',
-          validator: function(config, arg){
+          validator: function(arg){
             return arg === 42;
           }
         }

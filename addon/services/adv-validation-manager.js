@@ -268,7 +268,7 @@ export default Ember.Service.extend({
     } else {
       validationPromise = new Ember.RSVP.Promise((resolve, reject) => {
         try {
-          var result = validator.validate(config, ...fields);
+          var result = validator.validate(...fields, config);
           this._handleValidationResult(result, fields, config, validator, userDefinedValidationMessage, resolve, reject);
         } catch (e) {
           reject(e);

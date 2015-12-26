@@ -72,7 +72,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
       validations: [
         {
           fields: 'field1',
-          validator: function (config, arg) {
+          validator: function (arg) {
             return arg === 'test';
           }
         }
@@ -101,7 +101,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
       validations: [
         {
           fields: ['field1', 'field2'],
-          validator: function (config, arg1, arg2) {
+          validator: function (arg1, arg2) {
             return arg1 === 'test' && arg2 === 42;
           }
         }
@@ -134,7 +134,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
       validations: [
         {
           fields: 'field1.nestedField',
-          validator: function (config, arg) {
+          validator: function (arg) {
             return arg === 'test';
           }
         }
@@ -166,7 +166,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
       validations: [
         {
           fields: ['field1', 'field2'],
-          validator: function (config, arg1, arg2) {
+          validator: function (arg1, arg2) {
             return arg1 === 'test' && arg2 === 42;
           }
         }

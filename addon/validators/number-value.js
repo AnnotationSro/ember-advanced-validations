@@ -14,7 +14,7 @@ import AdvValidator from '../mixins/adv-validator';
  */
 export default Ember.Service.extend(AdvValidator, {
 
-  validate: function (config, field) {
+  validate: function (field, config) {
 
     Ember.assert(
       "At least one configuration parameter of maxValue or minValue must be specified for number-value validator",

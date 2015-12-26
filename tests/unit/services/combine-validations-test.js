@@ -26,14 +26,14 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
 
 
     let testValidator1 = Ember.Service.extend(AdvValidator, {
-      validate: function (config, arg) {
+      validate: function (arg) {
         return arg.length === 'test'.length;
       },
       isAsync: false
     });
 
     let testValidator2 = Ember.Service.extend(AdvValidator, {
-      validate: function (config, arg) {
+      validate: function (arg) {
         return arg === 'test';
       },
       isAsync: false
@@ -79,14 +79,14 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
 
 
     let testValidator1 = Ember.Service.extend(AdvValidator, {
-      validate: function (config, arg) {
+      validate: function (arg) {
         return arg.length === 'test'.length;
       },
       isAsync: false
     });
 
     let testValidator2 = Ember.Service.extend(AdvValidator, {
-      validate: function (config, arg) {
+      validate: function (arg, config) {
         return arg === config.testConfiguration;
       },
       isAsync: false
@@ -130,14 +130,14 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
 
 
     let testValidator1 = Ember.Service.extend(AdvValidator, {
-      validate: function (config, arg) {
+      validate: function (arg, config) {
         return arg.length === 'test'.length && arg === config.testConfiguration;
       },
       isAsync: false
     });
 
     let testValidator2 = Ember.Service.extend(AdvValidator, {
-      validate: function (config, arg) {
+      validate: function (arg, config) {
         return arg === config.testConfiguration;
       },
       isAsync: false
@@ -181,14 +181,14 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
 
 
     let testValidator1 = Ember.Service.extend(AdvValidator, {
-      validate: function (config, arg) {
+      validate: function (arg, config) {
         return arg.length === 'test'.length && arg === config.testConfiguration;
       },
       isAsync: false
     });
 
     let testValidator2 = Ember.Service.extend(AdvValidator, {
-      validate: function (config, arg) {
+      validate: function (arg) {
         return arg === 'blah - this is something wrong that does not match "test"';
       },
       isAsync: false
@@ -232,14 +232,14 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
 
 
     let testValidator1 = Ember.Service.extend(AdvValidator, {
-      validate: function (config, arg) {
+      validate: function (arg, config) {
         return arg.length === 'test'.length && arg === config.testConfiguration;
       },
       isAsync: false
     });
 
     let testValidator2 = Ember.Service.extend(AdvValidator, {
-      validate: function (config, arg) {
+      validate: function (arg) {
         return arg === 'blah - this is something wrong that does not match "test"';
       },
       validationMessage: 'this is not valid!',
