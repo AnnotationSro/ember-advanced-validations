@@ -1,3 +1,6 @@
+import Ember from 'ember';
+import {isFieldValid} from 'ember-advanced-validations/helpers/is-field-valid';
+
 export default Ember.Controller.extend({
 
   validationService: Ember.inject.service('adv-validation-manager'),
@@ -75,39 +78,30 @@ export default Ember.Controller.extend({
 
   ],
 
+  _getOrElse(value, defaultValue){
+    if (Ember.isPresent(value)) {
+      return value;
+    } else {
+      return defaultValue;
+    }
+  },
+
   actions: {
 
     validateAll(){
       this.get('validationService').validateObject(this)
         .then((validationResult) => {
-          this.set('simpleValidation', Ember.isEmpty(validationResult[0].result));
-          this.set('predefinedValidation', Ember.isEmpty(validationResult[1].result));
-          this.set('multiValidation', Ember.isEmpty(validationResult[2].result));
-          this.set('configValidation', Ember.isEmpty(validationResult[3].result));
-          this.set('combineValidation', Ember.isEmpty(validationResult[4].result));
+          this.set('simpleValidation', isFieldValid(validationResult, 'valueSimple'));
+          this.set('predefinedValidation', isFieldValid(validationResult, 'valuePredefined'));
+          this.set('multiValidation', isFieldValid(validationResult, 'valueMulti1'));
+          this.set('configValidation', isFieldValid(validationResult, 'valueConfig'));
+          this.set('combineValidation', isFieldValid(validationResult, 'valueCombine'));
 
-          let runIfResult = validationResult.find((result)=> {
-            return result.fields === 'valueRunIf';
-          });
-          if (runIfResult) {
-            this.set('runIfValidation', Ember.isEmpty(runIfResult.result));
-          } else {
-            this.set('runIfValidation', 'unknown');
-          }
 
-          runIfResult = validationResult.find((result)=> {
-            return result.fields === 'valueRunProperty';
-          });
-          if (runIfResult) {
-            this.set('runPropertyValidation', Ember.isEmpty(runIfResult.result));
-          } else {
-            this.set('runPropertyValidation', 'unknown');
-          }
-
+          this.set('runIfValidation', this._getOrElse(isFieldValid(validationResult, 'valueRunIf'), 'unknown'));
+          this.set('dependsOnValidation', this._getOrElse(isFieldValid(validationResult, 'valueRunProperty'), 'unknown'));
 
         });
-
-
     }
   }
 });
