@@ -29,7 +29,7 @@ export default Ember.Service.extend({
    * @return {Promise} validation result
    * @public
    */
-  validateObject(emberObject) {
+    validateObject(emberObject) {
     Ember.assert("Cannot validate null or undefined object", Ember.isPresent(emberObject));
     let allFieldValidations = emberObject.get('validations');
     let validationPromises = [];
@@ -52,33 +52,53 @@ export default Ember.Service.extend({
     //validations without ID won't be in this map
     let validationResultMap = {};
 
+    let doneValidationPartialFn = this._doneValidation(resolveValidationPromise, emberObject);
 
     if (Ember.isEmpty(allFieldValidations)) {
-      resolveValidationPromise(validationResult);
+      doneValidationPartialFn(validationResult);
     } else {
 
       allFieldValidations.forEach((fieldValidation) => {
         let dependsOnValidations = fieldValidation['dependsOn'];
         if (this._validationDependenciesResolved(dependsOnValidations, validationResultMap)) {
-          this._runSingleValidation(emberObject, fieldValidation, resolveValidationPromise, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult);
+          this._runSingleValidation(emberObject, fieldValidation, doneValidationPartialFn, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult);
         } else {
 
           awaitingValidations.push(new AwaitingValidation(
-            dependsOnValidations,
-            ()=> {
-              this._runSingleValidation(emberObject, fieldValidation, resolveValidationPromise, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult);
-            })
+              dependsOnValidations,
+              ()=> {
+                this._runSingleValidation(emberObject, fieldValidation, doneValidationPartialFn, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult);
+              })
           );
         }
       });
 
       if (Ember.isEmpty(validationPromises)) {
         //there are actually no validations to be run (e.g. none of them are able to run due to "runIf" restrictions)
-        resolveValidationPromise(validationResult);
+        doneValidationPartialFn(validationResult);
       }
     }
 
     return validationDonePromise;
+  },
+
+  _doneValidation(promiseResolve, target){
+    //why??? why, doesn't Javascript support currying out-of-box????
+    return function (validationResult) {
+      promiseResolve(
+        {
+          valid: _isObjectValid(validationResult),
+          target,
+          result: validationResult
+        }
+      );
+    };
+
+    function _isObjectValid(validationResult) {
+      return validationResult.every((res) => {
+        return Ember.isEmpty(res.result);
+      });
+    }
   },
 
   _findAvailableWaitingValidations(awaitingValidations, validationResultMap){
@@ -234,7 +254,7 @@ export default Ember.Service.extend({
    * @return validator AdvValidator
    * @private
    */
-  _getValidationDefinition(validatorDef) {
+    _getValidationDefinition(validatorDef) {
 
     if (Ember.typeOf(validatorDef) === 'string') {
       //it is a name of a Validation rather than a direct validation function
@@ -260,8 +280,8 @@ export default Ember.Service.extend({
     if (validator.get('isAsync')) {
       validationPromise = new Ember.RSVP.Promise((resolve, reject) => {
         validator.validate(config, ...fields).then((result) => {
-            this._handleValidationResult(result, fields, config, validator, userDefinedValidationMessage, resolve, reject);
-          })
+          this._handleValidationResult(result, fields, config, validator, userDefinedValidationMessage, resolve, reject);
+        })
           .catch((err) => reject(err));
 
       });
@@ -301,7 +321,7 @@ export default Ember.Service.extend({
             //this try/catch is a workaround for Ember Error: "registry.resolver.resolve is not a function"
             //which happens when service i18n is not registered - I guess....:(
             i18n = getOwner(this).lookup('service:i18n');
-          }catch(e){
+          } catch (e) {
             //nothing, just leave i18n as null
           }
           resolve(this._formatValidationMessage(message, fields, config, i18n));
@@ -322,7 +342,7 @@ export default Ember.Service.extend({
    *
    * Configuration parameters can be also used in validationMessage - use a placeholder's syntax: {config.parameterName}
    */
-  _formatValidationMessage(validationMessage, args, config, i18n){
+    _formatValidationMessage(validationMessage, args, config, i18n){
     let formatted;
 
     if (Ember.isPresent(i18n)) {

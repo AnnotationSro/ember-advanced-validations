@@ -27,7 +27,8 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : Regex valid
     expect(validationResult).to.exist;
 
     validationResult
-      .then((result) => {
+      .then((vResult) => {
+        let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
         expect(result[0]).to.deep.equal({fields: 'field1', result: []}, JSON.stringify(result[0]));
@@ -56,7 +57,8 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : Regex valid
     expect(validationResult).to.exist;
 
     validationResult
-      .then((result) => {
+      .then((vResult) => {
+        let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
         expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));
@@ -84,7 +86,8 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : Regex valid
     expect(validationResult).to.exist;
 
     validationResult
-      .then((result) => {
+      .then((vResult) => {
+        let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
         expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));
@@ -112,7 +115,8 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : Regex valid
     expect(validationResult).to.exist;
 
     validationResult
-      .then((result) => {
+      .then((vResult) => {
+        let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
         expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));

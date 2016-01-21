@@ -50,7 +50,8 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
     let validationResult = service.validateObject(validationObject);
     expect(validationResult).to.exist;
     validationResult
-      .then((result) => {
+      .then((vResult) => {
+        let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(2);
         expect(result[0]).to.deep.equal({fields: 'field2', result: []}, JSON.stringify(result[0]));
@@ -103,7 +104,8 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
     let validationResult = service.validateObject(validationObject);
     expect(validationResult).to.exist;
     validationResult
-      .then((result) => {
+      .then((vResult) => {
+        let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
         expect(result[0]).to.deep.equal({fields: 'field2', result: [false]}, JSON.stringify(result[0]));
@@ -161,7 +163,8 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
     let validationResult = service.validateObject(validationObject);
     expect(validationResult).to.exist;
     validationResult
-      .then((result) => {
+      .then((vResult) => {
+        let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(3);
         expect(result[0]).to.deep.equal({fields: 'field2', result: []}, JSON.stringify(result[0]));
@@ -231,7 +234,8 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
     let validationResult = service.validateObject(validationObject);
     expect(validationResult).to.exist;
     validationResult
-      .then((result) => {
+      .then((vResult) => {
+        let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(2);
         expect(result[0]).to.deep.equal({fields: 'field2', result: []}, JSON.stringify(result[0]));

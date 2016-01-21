@@ -31,7 +31,8 @@ describe('IsFieldValidHelper', function () {
     let validationResult = AdvValidationManager.create().validateObject(sampleObject);
     expect(validationResult).to.exist;
     validationResult
-      .then((result) => {
+      .then((vResult) => {
+        let result = vResult.result;
         var fieldValid = isFieldValid(result, 'field1');
         expect(fieldValid).to.be.ok;
         expect(fieldValid).to.be.truthy;
@@ -67,7 +68,8 @@ describe('IsFieldValidHelper', function () {
     let validationResult = AdvValidationManager.create().validateObject(sampleObject);
     expect(validationResult).to.exist;
     validationResult
-      .then((result) => {
+      .then((vResult) => {
+        let result = vResult.result;
         var fieldValid = isFieldValid(result, 'field1');
         expect(fieldValid).to.be.ok;
         expect(fieldValid).to.be.truthy;
@@ -103,7 +105,8 @@ describe('IsFieldValidHelper', function () {
     let validationResult = AdvValidationManager.create().validateObject(sampleObject);
     expect(validationResult).to.exist;
     validationResult
-      .then((result) => {
+      .then((vResult) => {
+        let result = vResult.result;
         var fieldValid = isFieldValid(result, 'field1');
         expect(fieldValid).to.be.falsy;
         done();
@@ -138,7 +141,8 @@ describe('IsFieldValidHelper', function () {
     let validationResult = AdvValidationManager.create().validateObject(sampleObject);
     expect(validationResult).to.exist;
     validationResult
-      .then((result) => {
+      .then((vResult) => {
+        let result = vResult.result;
         var fieldValid = isFieldValid(result, 'field1');
         expect(fieldValid).to.be.equal('hello world');
         done();
