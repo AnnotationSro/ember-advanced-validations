@@ -37,7 +37,6 @@
     "ember-export-application-global": "^1.0.4",
     "ember-getowner-polyfill": "1.0.0",
     "ember-i18n": "4.2.0",
-    "ember-lodash": "0.0.6",
     "ember-try": "~0.0.8"
   },
   "keywords": [
@@ -45,7 +44,8 @@
     "validation"
   ],
   "dependencies": {
-    "ember-cli-babel": "^5.1.5"
+    "ember-cli-babel": "^5.1.5",
+    "ember-lodash": "0.0.6"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
