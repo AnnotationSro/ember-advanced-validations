@@ -19,7 +19,8 @@ A quick summary of features provided by this validation framework:
   
 # Usage
   
-_**TBD**_
+  For a sample application refer to dummy application. 
+  More samples _**TBD**_
 
 
 ### Created with ♥ by Annotation
