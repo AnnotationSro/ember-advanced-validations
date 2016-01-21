@@ -7,4 +7,4 @@
 - [X] *runIf* option to make validations run conditionally - either based on fields' values or based on other validations ("why run *this* validation when *that* validation failed?")
 - [X] create a blueprint to generate a new validation
 - [X] create a helper _isFieldValid_ - it gets validation result and field name as parameters and returns true/false ( or maybe even validation message)
-- [X] (breaking change) change order of arguments passed into validate function (config should be last, since it is not used as often as field values)
+- [X] change order of arguments passed into validate function (config should be last, since it is not used as often as field values) **breaking change** 
