@@ -5,7 +5,7 @@ import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 
 
-describeModule('service:adv-validation-manager', 'Unit : Validator : Regex validator', {
+describeModule('service:adv-validation-manager', 'Unit : Validator : Numeric validator', {
   needs:['validator:numeric']
 }, function () {
 
@@ -61,7 +61,7 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : Regex valid
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: ["validation.is_number"]}, JSON.stringify(result[0]));
         done();
       })
       .catch((e) => {
@@ -90,7 +90,7 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : Regex valid
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: ["validation.is_number"]}, JSON.stringify(result[0]));
         done();
       })
       .catch((e) => {
@@ -119,7 +119,7 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : Regex valid
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: ["validation.is_number"]}, JSON.stringify(result[0]));
         done();
       })
       .catch((e) => {

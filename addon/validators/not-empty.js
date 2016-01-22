@@ -18,5 +18,8 @@ export default Ember.Service.extend(AdvValidator, {
     return typeof arg !== 'undefined' && arg !== null && arg !== '';
   },
 
+
+  validationMessage: 'validation.not_empty',
+
   isAsync: false
 });

@@ -11,6 +11,6 @@ export default Ember.Service.extend(AdvValidator, {
   },
 
   isAsync: false,
-  validatorMessage: 'is_number'
+  validationMessage: 'validation.is_number'
 
 });

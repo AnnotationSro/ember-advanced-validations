@@ -33,6 +33,6 @@ export default Ember.Service.extend(AdvValidator, {
   },
 
   isAsync: false,
-  validatorMessage: 'regex'
+  validationMessage: 'validation.regex'
 
 });

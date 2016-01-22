@@ -67,7 +67,7 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : Regex valid
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: ["validation.regex"]}, JSON.stringify(result[0]));
         done();
       })
       .catch((e) => {
@@ -99,7 +99,7 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : Regex valid
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: ["validation.regex"]}, JSON.stringify(result[0]));
         done();
       })
       .catch((e) => {
@@ -131,7 +131,7 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : Regex valid
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: ["validation.regex"]}, JSON.stringify(result[0]));
         done();
       })
       .catch((e) => {

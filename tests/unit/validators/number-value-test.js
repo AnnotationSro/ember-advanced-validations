@@ -5,7 +5,7 @@ import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 
 
-describeModule('service:adv-validation-manager', 'Unit : Validator : String length validator', {
+describeModule('service:adv-validation-manager', 'Unit : Validator : Numeric value validator', {
   needs: ['validator:number-value']
 }, function () {
 
@@ -133,7 +133,7 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : String leng
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: ["validation.number_value"]}, JSON.stringify(result[0]));
         done();
       })
       .catch((e) => {
@@ -166,7 +166,7 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : String leng
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: ["validation.number_value"]}, JSON.stringify(result[0]));
         done();
       })
       .catch((e) => {
@@ -200,7 +200,7 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : String leng
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: ["validation.number_value"]}, JSON.stringify(result[0]));
         done();
       })
       .catch((e) => {
@@ -232,7 +232,7 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : String leng
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: ["validation.number_value"]}, JSON.stringify(result[0]));
         done();
       })
       .catch((e) => {
