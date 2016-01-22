@@ -49,7 +49,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: []}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: [], params: {}}, JSON.stringify(result[0]));
 
         done();
       })
@@ -103,7 +103,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: []}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: [], params: {}}, JSON.stringify(result[0]));
 
         done();
       })
@@ -155,7 +155,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: []}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: [], params: {}}, JSON.stringify(result[0]));
 
         done();
       })
@@ -207,7 +207,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: [false], params: {}}, JSON.stringify(result[0]));
 
         done();
       })
@@ -260,7 +260,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: ['this is not valid!']}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: ['this is not valid!'], params: {}}, JSON.stringify(result[0]));
 
         done();
       })

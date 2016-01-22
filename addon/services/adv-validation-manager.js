@@ -220,7 +220,7 @@ export default Ember.Service.extend({
 
       //check if all validations on this field are true - only then resolve this field as valid
       new Ember.RSVP.all(fieldValidations).then((result) => {
-        resolve({fields: fields, result: _.filter(result, (r) => r !== true)});
+        resolve({fields: fields, result: _.filter(result, (r) => r !== true), params: fieldValidation.params || {}});
 
       }).catch(reject);
 

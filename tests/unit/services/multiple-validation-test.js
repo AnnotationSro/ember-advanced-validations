@@ -39,8 +39,8 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(2);
-        expect(result[0]).to.deep.equal({fields:'field1', result: []}, JSON.stringify(result[0]));
-        expect(result[1]).to.deep.equal({fields:'field2', result: []}, JSON.stringify(result[1]));
+        expect(result[0]).to.deep.equal({fields:'field1', result: [], params: {}}, JSON.stringify(result[0]));
+        expect(result[1]).to.deep.equal({fields:'field2', result: [], params: {}}, JSON.stringify(result[1]));
 
         expect(vResult.valid).to.be.true;
         expect(vResult.target).to.deep.equal(sampleObject);
@@ -89,8 +89,8 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(2);
-        expect(result[0]).to.deep.equal({fields:'field1', result: []}, JSON.stringify(result[0]));
-        expect(result[1]).to.deep.equal({fields:'field2', result: [false]}, JSON.stringify(result[1]));
+        expect(result[0]).to.deep.equal({fields:'field1', result: [], params: {}}, JSON.stringify(result[0]));
+        expect(result[1]).to.deep.equal({fields:'field2', result: [false], params: {}}, JSON.stringify(result[1]));
 
         expect(vResult.valid).to.be.false;
         expect(vResult.target).to.deep.equal(sampleObject);

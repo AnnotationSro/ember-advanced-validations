@@ -63,7 +63,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: ['not again!']}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: ['not again!'], params: {}}, JSON.stringify(result[0]));
         done();
       })
       .catch((e) => {
@@ -109,7 +109,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: [false]}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: [false], params: {}}, JSON.stringify(result[0]));
         done();
       })
       .catch((e) => {
@@ -156,7 +156,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
         let result = vResult.result;
         expect(result).to.exist;
         expect(result.length).to.equal(1);
-        expect(result[0]).to.deep.equal({fields: 'field1', result: ['Nothing is valid!']}, JSON.stringify(result[0]));
+        expect(result[0]).to.deep.equal({fields: 'field1', result: ['Nothing is valid!'], params: {}}, JSON.stringify(result[0]));
         done();
 
       })
@@ -208,7 +208,8 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
 
         expect(result[0]).to.deep.equal({
           fields: ['field1', 'field2'],
-          result: ['I am translated test1 test2']
+          result: ['I am translated test1 test2'],
+          params: {}
         }, JSON.stringify(result[0]));
         done();
 
@@ -264,7 +265,8 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
 
         expect(result[0]).to.deep.equal({
           fields: ['field1', 'field2'],
-          result: ['I am translated test1 hello']
+          result: ['I am translated test1 hello'],
+          params: {}
         }, JSON.stringify(result[0]));
         done();
 
@@ -318,7 +320,8 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
 
         expect(result[0]).to.deep.equal({
           fields: ['field1', 'field2'],
-          result: ['Hello world test1']
+          result: ['Hello world test1'],
+          params: {}
         }, JSON.stringify(result[0]));
         done();
 
