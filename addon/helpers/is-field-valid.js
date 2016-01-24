@@ -19,11 +19,7 @@ export function isFieldValid(validationResult, field){
     return true;
   }
 
-  if (fieldResult.result.length === 1){
-    return fieldResult.result[0];
-  }
-
-  return fieldResult.result;
+  return fieldResult.result.every((res) => res === true);
 }
 
 export function isFieldValidHelper(params, hash) {

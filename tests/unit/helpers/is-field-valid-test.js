@@ -144,7 +144,7 @@ describe('IsFieldValidHelper', function () {
       .then((vResult) => {
         let result = vResult;
         var fieldValid = isFieldValid(result, 'field1');
-        expect(fieldValid).to.be.equal('hello world');
+        expect(fieldValid).to.be.falsy;
         done();
       })
       .catch((e) => {
