@@ -32,7 +32,7 @@ describe('IsFieldValidHelper', function () {
     expect(validationResult).to.exist;
     validationResult
       .then((vResult) => {
-        let result = vResult.result;
+        let result = vResult;
         var fieldValid = isFieldValid(result, 'field1');
         expect(fieldValid).to.be.ok;
         expect(fieldValid).to.be.truthy;
@@ -69,7 +69,7 @@ describe('IsFieldValidHelper', function () {
     expect(validationResult).to.exist;
     validationResult
       .then((vResult) => {
-        let result = vResult.result;
+        let result = vResult;
         var fieldValid = isFieldValid(result, 'field1');
         expect(fieldValid).to.be.ok;
         expect(fieldValid).to.be.truthy;
@@ -106,7 +106,7 @@ describe('IsFieldValidHelper', function () {
     expect(validationResult).to.exist;
     validationResult
       .then((vResult) => {
-        let result = vResult.result;
+        let result = vResult;
         var fieldValid = isFieldValid(result, 'field1');
         expect(fieldValid).to.be.falsy;
         done();
@@ -142,7 +142,7 @@ describe('IsFieldValidHelper', function () {
     expect(validationResult).to.exist;
     validationResult
       .then((vResult) => {
-        let result = vResult.result;
+        let result = vResult;
         var fieldValid = isFieldValid(result, 'field1');
         expect(fieldValid).to.be.equal('hello world');
         done();

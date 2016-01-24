@@ -7,7 +7,7 @@ export function isFieldValid(validationResult, field){
   }
   Ember.assert('Field to get validation result is not provided for isFieldValid helper', Ember.isPresent(field));
 
-  let fieldResult = validationResult.find((result) => {
+  let fieldResult = validationResult.result.find((result) => {
     return isSingleFieldValidated(result.fields, field);
   });
 
