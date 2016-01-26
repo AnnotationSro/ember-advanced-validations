@@ -3,7 +3,7 @@ import Ember from 'ember';
 
 export function getValidationMessage(validationResult, field) {
 
-  if (Ember.isNone(validationResult.result)){
+  if (Ember.isNone(validationResult) || Ember.isEmpty(validationResult.result)){
     return null;
   }
 
