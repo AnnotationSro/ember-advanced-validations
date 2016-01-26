@@ -3,6 +3,10 @@ import Ember from 'ember';
 
 export function getValidationMessage(validationResult, field) {
 
+  if (Ember.isNone(validationResult.result)){
+    return null;
+  }
+
   let resultObject = validationResult.result.find((res)=> {
     if (Array.isArray(res.fields)) {
       return res.fields.contains(field);
@@ -13,13 +17,13 @@ export function getValidationMessage(validationResult, field) {
 
   if (Ember.isNone(resultObject)) {
     //no validation message for this field
-    return '';
+    return null;
   }
 
   let messages = resultObject.result;
   if (Ember.isEmpty(messages)) {
     //no validation message specified
-    return '';
+    return null;
   }
 
 

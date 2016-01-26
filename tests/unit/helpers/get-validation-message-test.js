@@ -67,7 +67,7 @@ describe('GetValidationMessageHelper', function() {
       .then((vResult) => {
         let result = vResult;
         var message = getValidationMessage(result, 'field1');
-        expect(message).to.equal('');
+        expect(message).to.be.null;
         done();
       })
       .catch((e) => {
