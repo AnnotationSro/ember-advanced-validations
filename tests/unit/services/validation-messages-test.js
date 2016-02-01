@@ -5,6 +5,7 @@ import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 import AdvValidator from 'ember-advanced-validations/mixins/adv-validator';
 import EnTranslations from 'ember-advanced-validations/locales/en/translations';
+import configuration from 'ember-advanced-validations/configuration';
 import getOwner from 'ember-getowner-polyfill';
 
 
@@ -23,6 +24,8 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
       "override": "Hello world {0}"
     };
     i18n.addTranslations("en", EnTranslations);
+
+    configuration.setProperty('i18n_enabled', true);
   }
 
 
@@ -30,7 +33,7 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
    * note that in all these tests need to have a TranslationInitializer executed before they
    */
 
-  it('validates one field + module validator - custom validation message', function (done) {
+  it('validates one field + module validator - custom validation message - translated', function (done) {
     initTestTranslations(getOwner(this));
 
     let service = this.subject();
@@ -71,6 +74,49 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
       });
   });
 
+
+  it('validates one field + module validator - custom validation message - not translated', function (done) {
+    initTestTranslations(getOwner(this));
+
+    let service = this.subject();
+
+    let sampleObject = Ember.Controller.extend(AdvValidable, {
+      validations: [
+        {
+          fields: 'field1',
+          validator: 'test-validator'
+        }
+      ],
+      field1: 'test'
+    }).create();
+
+
+    let testValidator = Ember.Service.extend(AdvValidator, {
+      validate: function () {
+        return false;
+      },
+      isAsync: false,
+      validationMessage: 'validation.test2'
+    });
+
+    this.register('validator:test-validator', testValidator);
+
+    configuration.setProperty('i18n_enabled', false);
+
+    let validationResult = service.validateObject(sampleObject);
+    expect(validationResult).to.exist;
+    validationResult
+      .then((vResult) => {
+        let result = vResult.result;
+        expect(result).to.exist;
+        expect(result.length).to.equal(1);
+        expect(result[0]).to.deep.equal({fields: 'field1', result: ['validation.test2'], params: {}}, JSON.stringify(result[0]));
+        done();
+      })
+      .catch((e) => {
+        done(e);
+      });
+  });
 
   it('validates one field + module validator - async - default validation message', function (done) {
     initTestTranslations(getOwner(this));

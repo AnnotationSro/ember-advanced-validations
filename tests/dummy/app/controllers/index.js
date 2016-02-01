@@ -89,8 +89,12 @@ export default Ember.Controller.extend({
   actions: {
 
     validateAll(){
+      this.set('validationResult', null);
+
       this.get('validationService').validateObject(this)
         .then((validationResult) => {
+          this.set('validationResult', validationResult);
+
           this.set('simpleValidation', isFieldValid(validationResult, 'valueSimple'));
           this.set('predefinedValidation', isFieldValid(validationResult, 'valuePredefined'));
           this.set('multiValidation', isFieldValid(validationResult, 'valueMulti1'));

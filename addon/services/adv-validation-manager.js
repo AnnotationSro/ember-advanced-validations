@@ -2,6 +2,7 @@ import Ember from 'ember';
 import AdvValidator from '../mixins/adv-validator';
 import _ from 'lodash/lodash';
 import getOwner from 'ember-getowner-polyfill';
+import configuration from '../configuration';
 
 class AwaitingValidation {
   constructor(dependsOn, validatorFn) {
@@ -317,13 +318,17 @@ export default Ember.Service.extend({
         if (Ember.isPresent(message)) {
 
           let i18n = null;
-          try {
-            //this try/catch is a workaround for Ember Error: "registry.resolver.resolve is not a function"
-            //which happens when service i18n is not registered - I guess....:(
-            i18n = getOwner(this).lookup('service:i18n');
-          } catch (e) {
-            //nothing, just leave i18n as null
+
+          if (configuration.isI18N()) {
+            try {
+              //this try/catch is a workaround for Ember Error: "registry.resolver.resolve is not a function"
+              //which happens when service i18n is not registered - I guess....:(
+              i18n = getOwner(this).lookup('service:i18n');
+            } catch (e) {
+              //nothing, just leave i18n as null
+            }
           }
+
           resolve(this._formatValidationMessage(message, fields, config, i18n));
         } else {
           resolve(false);
