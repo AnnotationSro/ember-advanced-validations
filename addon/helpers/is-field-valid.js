@@ -12,7 +12,7 @@ export function isFieldValid(validationResult, field){
   });
 
   if (Ember.isNone(fieldResult)){
-    return null;
+    return true;
   }
 
   if (fieldResult.result.length === 0){
