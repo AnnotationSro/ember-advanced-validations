@@ -4,7 +4,7 @@ import Ember from 'ember';
 export function getValidationMessage(validationResult, field) {
 
   if (Ember.isNone(validationResult) || Ember.isEmpty(validationResult.result)){
-    return null;
+    return "";
   }
 
   let resultObject = validationResult.result.find((res)=> {
@@ -17,13 +17,13 @@ export function getValidationMessage(validationResult, field) {
 
   if (Ember.isNone(resultObject)) {
     //no validation message for this field
-    return null;
+    return "";
   }
 
   let messages = resultObject.result;
   if (Ember.isEmpty(messages)) {
     //no validation message specified
-    return null;
+    return "";
   }
 
 
