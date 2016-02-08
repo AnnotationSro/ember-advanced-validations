@@ -33,6 +33,9 @@ export default Ember.Service.extend({
     validateObject(emberObject) {
     Ember.assert("Cannot validate null or undefined object", Ember.isPresent(emberObject));
     let allFieldValidations = emberObject.get('validations');
+
+    allFieldValidations = this._convertSimpleValidationDefinitions(allFieldValidations);
+
     let validationPromises = [];
 
     //array of validations to be run -> to start an awaiting validations execute them as functions (since elements in this array are functions)
@@ -81,6 +84,46 @@ export default Ember.Service.extend({
     }
 
     return validationDonePromise;
+  },
+  /**
+   * checks all field validations - if a validation is in simple form, it creates advanced equivalent,
+   * if validation definition is already in advanced form, it leaves it be
+     */
+  _convertSimpleValidationDefinitions(allFieldValidations){
+
+    let advancedDefinitions = [];
+
+    //loop backwards so that we can remove simple validations from the field
+    for (var i = allFieldValidations.length - 1; i >= 0; i--) {
+
+      let validation = allFieldValidations[i];
+      if (isValidationSimple(validation)){
+        advancedDefinitions = advancedDefinitions.concat(convertSingleSimpleValidation(validation));
+
+        allFieldValidations.splice(i, 1);
+      }
+    }
+
+    return allFieldValidations.concat(advancedDefinitions);
+
+    function isValidationSimple(validation){
+      return Ember.isEmpty(validation['fields']);
+    }
+
+    function convertSingleSimpleValidation(simpleDefinition){
+      let keys = Object.keys(simpleDefinition);
+      Ember.assert('Validation definition invalid format.', Ember.isPresent(keys) && keys.length === 1);
+
+      let validatorName = keys[0];
+      let simpleFields = simpleDefinition[keys[0]];
+
+      return simpleFields.map((field) => {
+        return {
+          validator: validatorName,
+          fields: field
+        };
+      });
+    }
   },
 
   _doneValidation(promiseResolve, target){
@@ -133,7 +176,7 @@ export default Ember.Service.extend({
     let validatorId = fieldValidation['id'];
 
     Ember.assert('No fields defined for validation', Ember.isPresent(fields));
-    Ember.assert('No validator defined for validation', Ember.isPresent(fields));
+    Ember.assert('No validator defined for validation', Ember.isPresent(validatorArray));
 
     if (Ember.isNone(fields) || Ember.isNone(fields)) {
       rejectValidationPromise();
