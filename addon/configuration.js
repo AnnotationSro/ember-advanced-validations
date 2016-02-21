@@ -1,7 +1,8 @@
 import Ember from 'ember';
 
 const CONFIG_PROPERTIES = {
-  i18n_enabled: false
+  i18n_enabled: false,
+  realtime_debounce: 500 //msec
 };
 
 function getConfigValue(property){
@@ -28,5 +29,9 @@ export default {
 
   isI18N(){
     return getConfigValue('i18n_enabled');
+  },
+
+  getRealtimeTebounceMsec(){
+    return getConfigValue('realtime_debounce');
   }
 };

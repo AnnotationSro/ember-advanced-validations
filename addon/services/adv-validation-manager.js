@@ -112,8 +112,12 @@ export default Ember.Service.extend({
 
     let stopValidationArray = realTimeFieldValidations.map((validationDef) => {
       let fields = validationDef['fields'];
-      //todo debounce
-      //todo ako sa to sprava, ked realtime validacia ma dependency na inu? nehromadia sa v awaiting?
+
+      let debounceTime = configuration.getRealtimeTebounceMsec();
+      if (Ember.isPresent(validationDef['config']) && validationDef['config']['realtime_debounce']) {
+        debounceTime = validationDef['config']['realtime_debounce'];
+      }
+
       let validationFn = ()=> {
         let validationResultMap = {};
         let validationPromises = [];
@@ -138,7 +142,9 @@ export default Ember.Service.extend({
 
       //register observers
       fields.forEach((f)=> {
-        Ember.addObserver(emberObject, f, this, validationFn);
+        Ember.addObserver(emberObject, f, this, ()=> {
+          Ember.run.debounce(this, validationFn, debounceTime);
+        });
       });
 
       //create an array of functions that will be called to unregister/remove observers

@@ -1,14 +1,21 @@
 import { expect } from 'chai';
 import { describeModule, it } from 'ember-mocha';
+import {  beforeEach } from 'mocha';
 
 import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 import AdvValidator from 'ember-advanced-validations/mixins/adv-validator';
+import configuration from 'ember-advanced-validations/configuration';
 
 
 describeModule('service:adv-validation-manager', 'Unit : Service : adv validation manager - realtime validator', {
   // Specify the other units that are required for this test.
 }, function () {
+
+  beforeEach(function () {
+    configuration.setProperty('realtime_debounce', 0);
+  });
+
 
   it('validates one field', function (done) {
     let service = this.subject();
@@ -42,6 +49,49 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
 
   });
 
+  it('validates one field - twice', function (done) {
+    let service = this.subject();
+
+    let sampleObject = Ember.Controller.extend(AdvValidable, {
+      validations: [
+        {
+          fields: 'field1',
+          validator: function () {
+            return true;
+          },
+          realtime: true
+        }
+      ],
+      field1: 'test'
+    }).create();
+
+    let callbackCalled = 0;
+
+    let onValidation = () => {
+      callbackCalled++;
+      if (callbackCalled === 2) {
+        done();
+      }
+    };
+
+    service.startRealtimeValidation(sampleObject, onValidation);
+
+    //trigger runtime validation
+    sampleObject.set('field1', 'hello');
+    Ember.run.later(this, function () {
+      sampleObject.set('field1', 'hello2');
+    }, 200);
+
+
+    //I am asserting, that validation is not run, so there is no place to finish this test (mark it as 'done')
+    //so I give validation a little time to see if it actually happens or not
+    setTimeout(()=> {
+      if (callbackCalled !== 2){
+        done("validation should be performed twice, but it wasn't");
+      }
+    }, 600);
+  });
+
   it('validates one field - stop validation works', function (done) {
     let service = this.subject();
 
@@ -58,8 +108,9 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
       field1: 'test'
     }).create();
 
-
+    let validationCallback = 0;
     let onValidation = () => {
+      validationCallback++;
       done("error");
     };
 
@@ -72,7 +123,9 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
     //I am asserting, that validation is not run, so there is no place to finish this test (mark it as 'done')
     //so I give validation a little time to see if it actually happens or not
     setTimeout(()=> {
-      done();
+      if (validationCallback===0) {
+        done();
+      }
     }, 200);
 
   });
@@ -209,4 +262,97 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
 
   });
 
+
+  it('respects debounce time - global time config', function (done) {
+
+    configuration.setProperty('realtime_debounce', 200);
+
+    let service = this.subject();
+
+    let sampleObject = Ember.Controller.extend(AdvValidable, {
+      validations: [
+        {
+          fields: 'field1',
+          validator: function () {
+            return true;
+          },
+          realtime: true
+        }
+      ],
+      field1: 'test'
+    }).create();
+
+    let validationRunCount = 0;
+
+    let onValidation = () => {
+      validationRunCount++;
+      if (validationRunCount === 2) {
+        done("realtime validation should be called just once - not twice for (every property change)");
+      }
+    };
+
+    service.startRealtimeValidation(sampleObject, onValidation);
+
+    //trigger runtime validation
+    sampleObject.set('field1', 'hello');
+    Ember.run.later(this, function () {
+      sampleObject.set('field1', 'hello2');
+    }, 150);
+
+    //I am asserting, that validation is not run, so there is no place to finish this test (mark it as 'done')
+    //so I give validation a little time to see if it actually happens or not
+    setTimeout(()=> {
+      if (validationRunCount === 1) {
+        done();
+      }
+    }, 600);
+
+  });
+
+  it('respects debounce time - per validation time config', function (done) {
+
+    let service = this.subject();
+
+    let sampleObject = Ember.Controller.extend(AdvValidable, {
+      validations: [
+        {
+          fields: 'field1',
+          validator: function () {
+            return true;
+          },
+          config: {
+            realtime_debounce: 200
+          },
+          realtime: true
+        }
+      ],
+      field1: 'test'
+    }).create();
+
+    let validationRunCount = 0;
+
+    let onValidation = () => {
+      validationRunCount++;
+      if (validationRunCount === 2) {
+        done("realtime validation should be called just once - not twice for (every property change)");
+      }
+    };
+
+    service.startRealtimeValidation(sampleObject, onValidation);
+
+    //trigger runtime validation
+    sampleObject.set('field1', 'hello');
+    Ember.run.later(this, function () {
+      sampleObject.set('field1', 'hello2');
+    }, 150);
+
+    //I am asserting, that validation is not run, so there is no place to finish this test (mark it as 'done')
+    //so I give validation a little time to see if it actually happens or not
+    setTimeout(()=> {
+      if (validationRunCount === 1) {
+        done();
+      }
+    }, 400);
+
+  });
 });
