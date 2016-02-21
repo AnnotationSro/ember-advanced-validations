@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 
 export function isFieldValid(validationResult, field){
-  if (Ember.isNone(validationResult)){
+  if (Ember.isNone(validationResult) || Ember.isNone(validationResult.result)){
     return true;
   }
   Ember.assert('Field to get validation result is not provided for isFieldValid helper', Ember.isPresent(field));
