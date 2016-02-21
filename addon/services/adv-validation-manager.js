@@ -85,6 +85,83 @@ export default Ember.Service.extend({
 
     return validationDonePromise;
   },
+
+  /**
+   * starts real-time validation on all validation definitions marked as real-time
+   *
+   * DO NOT FORGET to stop real-time validation afterwards (e.g. on route change, component destroy,...)
+   * to stop real-time validations, just run a function that you get as a result of this method
+   *
+   * @param  {any Ember object} emberObject Ember object to validate
+   * @param {callback} function to be called when validation is done - function should accept one parameter - validation result
+   * @return {Promise} validation result
+   * @public
+
+   */
+  startRealtimeValidation(emberObject, onValidationCallback){
+    Ember.assert("Cannot validate null or undefined object", Ember.isPresent(emberObject));
+    Ember.assert("It seems you forgot to specify 'onValidationCallback'", Ember.isPresent(onValidationCallback));
+
+    let allFieldValidations = emberObject.get('validations');
+    allFieldValidations = this._convertSimpleValidationDefinitions(allFieldValidations);
+
+    //find real-time validations
+    let realTimeFieldValidations = allFieldValidations.filter((definition) => {
+      return definition['realtime'] === true;
+    });
+
+    let stopValidationArray = realTimeFieldValidations.map((validationDef) => {
+      let fields = validationDef['fields'];
+      //todo debounce
+      //todo ako sa to sprava, ked realtime validacia ma dependency na inu? nehromadia sa v awaiting?
+      let validationFn = ()=> {
+        let validationResultMap = {};
+        let validationPromises = [];
+        let awaitingValidations = [];
+        let validationResult = [];
+
+        let validationPromise = new Ember.RSVP.Promise((resolve, reject)=> {
+          let doneValidationPartialFn = this._doneValidation(resolve, emberObject);
+          this._runSingleValidation(emberObject, validationDef, doneValidationPartialFn, reject, validationResultMap, validationPromises, awaitingValidations, validationResult);
+        });
+
+        validationPromise.then((result) => {
+          onValidationCallback(result);
+        }).catch((err)=> {
+          Ember.Logger.error(`Error while validating field(s) ${fields} - error: ${err}`);
+        });
+      };
+
+      if (!Array.isArray(fields)) {
+        fields = [fields];
+      }
+
+      //register observers
+      fields.forEach((f)=> {
+        Ember.addObserver(emberObject, f, this, validationFn);
+      });
+
+      //create an array of functions that will be called to unregister/remove observers
+      return fields.map((f)=> {
+        return ()=> {
+          Ember.removeObserver(emberObject, f, this, validationFn);
+        };
+
+      });
+
+    });
+
+
+    return ()=> {
+      stopValidationArray.forEach((fieldUnregisterArray) => {
+        fieldUnregisterArray.forEach((unregisterFn)=> {
+          unregisterFn();
+        });
+      });
+    };
+  },
+
+
   /**
    * checks all field validations - if a validation is in simple form, it creates advanced equivalent,
    * if validation definition is already in advanced form, it leaves it be
@@ -226,6 +303,8 @@ export default Ember.Service.extend({
           validation.validatorFn();
         });
       }
+    }).catch((err) => {
+      Ember.Logger.error(`Error while validating field(s) ${fields} - error: ${err}`);
     });
   },
 
