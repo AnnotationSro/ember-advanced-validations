@@ -31,7 +31,7 @@ export default {
     return getConfigValue('i18n_enabled');
   },
 
-  getRealtimeTebounceMsec(){
+  getRealtimeDebounceMsec(){
     return getConfigValue('realtime_debounce');
   }
 };

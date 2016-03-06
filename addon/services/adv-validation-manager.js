@@ -113,7 +113,7 @@ export default Ember.Service.extend({
     let stopValidationArray = realTimeFieldValidations.map((validationDef) => {
       let fields = validationDef['fields'];
 
-      let debounceTime = configuration.getRealtimeTebounceMsec();
+      let debounceTime = configuration.getRealtimeDebounceMsec();
       if (Ember.isPresent(validationDef['config']) && validationDef['config']['realtime_debounce']) {
         debounceTime = validationDef['config']['realtime_debounce'];
       }
