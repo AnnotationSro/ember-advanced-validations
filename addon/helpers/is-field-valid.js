@@ -7,19 +7,23 @@ export function isFieldValid(validationResult, field){
   }
   Ember.assert('Field to get validation result is not provided for isFieldValid helper', Ember.isPresent(field));
 
-  let fieldResult = validationResult.result.find((result) => {
+  let fieldResultList = validationResult.result.filter((result) => {
     return isSingleFieldValidated(result.fields, field);
   });
 
-  if (Ember.isNone(fieldResult)){
+  if (Ember.isEmpty(fieldResultList)){
     return true;
   }
 
-  if (fieldResult.result.length === 0){
-    return true;
-  }
+	return fieldResultList.every((fieldResult) => {
+		if (fieldResult.result.length === 0){
+			return true;
+		}
 
-  return fieldResult.result.every((res) => res === true);
+		return fieldResult.result.every((res) => res === true);
+	});
+
+
 }
 
 export function isFieldValidHelper(params, hash) {
