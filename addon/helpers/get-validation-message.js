@@ -7,20 +7,26 @@ export function getValidationMessage(validationResult, field) {
     return "";
   }
 
-  let resultObject = validationResult.result.find((res)=> {
+  let invalidFields = validationResult.result
+  .filter((res)=> {
     if (Array.isArray(res.fields)) {
-      return res.fields.contains(field);
+      return res.fields.indexOf(field) > -1;
     } else {
       return res.fields === field;
     }
-  });
+  })
+  .filter((res)=>{
+    return Ember.isPresent(res.result); //there is something wrong/invalid in this validation
+  })
+  ;
 
-  if (Ember.isNone(resultObject)) {
+  if (Ember.isEmpty(invalidFields)) {
     //no validation message for this field
     return "";
   }
 
-  let messages = resultObject.result;
+  //pick only the first validation error -> this is probably not the best way to handle this (we should probably return all messages not just the first one)
+  let messages = invalidFields[0].result;
   if (Ember.isEmpty(messages)) {
     //no validation message specified
     return "";
