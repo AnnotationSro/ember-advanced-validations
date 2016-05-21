@@ -164,8 +164,8 @@ Optionally you can run a certain validation based on some dynamic condition:
 ## Validation helpers
 
 You can make use of 2 helpers provided by this addon:
- - getValidationMessage - retrieves validation message for specified field
- - isFieldValid - returns simple true/false if specified field is valid
+ - **getValidationMessage** - retrieves validation message for specified field
+ - **isFieldValid** - returns simple true/false if specified field is valid
  
 ```
 {{getValidationMessage field='myField' validationResult=validationResult}}
