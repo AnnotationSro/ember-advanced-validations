@@ -1,6 +1,5 @@
 import Ember from 'ember';
 
-
 export function isFieldValid(validationResult, field){
   if (Ember.isNone(validationResult) || Ember.isNone(validationResult.result)){
     return true;
