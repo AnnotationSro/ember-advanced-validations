@@ -16,7 +16,7 @@ A quick summary of features provided by this validation framework:
 * Validation messages per field
     * Full support of i18n (via [ember-i18n addon](https://github.com/jamesarosen/ember-i18n))
     * Custom validation messages can override default ones provided by this framework    
-
+* helper to check if speficiec [field is valid or retrieve its validation message](#validation-helpers)
 
 
 # Usage
@@ -160,6 +160,28 @@ Optionally you can run a certain validation based on some dynamic condition:
       field2: 'runMe'
     }
 ```
+
+## Validation helpers
+
+You can make use of 2 helpers provided by this addon:
+ - getValidationMessage - retrieves validation message for specified field
+ - isFieldValid - returns simple true/false if specified field is valid
+ 
+```
+{{getValidationMessage field='myField' validationResult=validationResult}}
+```
+
+```
+{{isFieldValid field='myField' validationResult=validationResult}}
+```
+or in JS
+```
+import {isFieldValid, getValidationMessage} from 'ember-advanced-validations/helpers/is-field-valid';
+
+var fieldValid = isFieldValid(validationResult, 'myField');
+var validationMessage = getValidationMessage(validationResult, 'myField');
+```
+ 
 
 ## Global configuration
 
