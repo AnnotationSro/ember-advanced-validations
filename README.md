@@ -111,6 +111,7 @@ Usage:
   ```
 
 Besides a required `validate` function you can also define these properties:
+
 | Property            | Description                                                                   |   |
 |---------------------|-------------------------------------------------------------------------------|---|
 | `isAsync`           | if true, the validation is required to return a _Promise_; default is _false_ |   |
