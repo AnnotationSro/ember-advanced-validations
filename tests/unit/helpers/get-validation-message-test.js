@@ -39,7 +39,7 @@ describe('GetValidationMessageHelper', function() {
   }
 
 
-  it('single validation', function (done) {
+  it('finds message for invalid validation', function (done) {
 
     let sampleObject = Ember.Controller.extend(AdvValidable, {
       validations: [
@@ -69,7 +69,7 @@ describe('GetValidationMessageHelper', function() {
       });
   });
 
-  it('valid result', function (done) {
+  it('does not find anything because validation result is ok', function (done) {
 
     let sampleObject = Ember.Controller.extend(AdvValidable, {
       validations: [
@@ -98,4 +98,48 @@ describe('GetValidationMessageHelper', function() {
         done(e);
       });
   });
+
+
+  it('finds message for invalid validation - multiple validations on the same field', function (done) {
+
+  /**
+   * first validation is ok, the second one fails
+   * also the second validation is an array... because why not?
+   *
+   */
+    let sampleObject = Ember.Controller.extend(AdvValidable, {
+      validations: [
+        {
+          fields: 'field1',
+          validator: function () {
+            return true;
+          },
+          validationMessage: 'I am king of the world!!'
+        },
+        {
+          fields: ['field1', 'field2'],
+          validator: function () {
+            return false;
+          },
+          validationMessage: 'hello world'
+        }
+      ],
+      field1: 'test',
+      field2: 'test'
+    }).create();
+
+    let validationResult = AdvValidationManager.create().validateObject(sampleObject);
+    expect(validationResult).to.exist;
+    validationResult
+      .then((vResult) => {
+        let result = vResult;
+        var message = getValidationMessage(result, 'field1');
+        expect(message).to.equal('hello world');
+        done();
+      })
+      .catch((e) => {
+        done(e);
+      });
+  });
+
 });

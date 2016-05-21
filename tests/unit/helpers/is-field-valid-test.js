@@ -34,8 +34,7 @@ describe('IsFieldValidHelper', function () {
       .then((vResult) => {
         let result = vResult;
         var fieldValid = isFieldValid(result, 'field1');
-        expect(fieldValid).to.be.ok;
-        expect(fieldValid).to.be.truthy;
+        expect(fieldValid).to.be.true;
         done();
       })
       .catch((e) => {
@@ -71,8 +70,7 @@ describe('IsFieldValidHelper', function () {
       .then((vResult) => {
         let result = vResult;
         var fieldValid = isFieldValid(result, 'field1');
-        expect(fieldValid).to.be.ok;
-        expect(fieldValid).to.be.truthy;
+        expect(fieldValid).to.be.true;
         done();
       })
       .catch((e) => {
@@ -108,7 +106,7 @@ describe('IsFieldValidHelper', function () {
       .then((vResult) => {
         let result = vResult;
         var fieldValid = isFieldValid(result, 'field1');
-        expect(fieldValid).to.be.falsy;
+        expect(fieldValid).to.be.false;
         done();
       })
       .catch((e) => {
@@ -144,7 +142,77 @@ describe('IsFieldValidHelper', function () {
       .then((vResult) => {
         let result = vResult;
         var fieldValid = isFieldValid(result, 'field1');
-        expect(fieldValid).to.be.falsy;
+        expect(fieldValid).to.be.false;
+        done();
+      })
+      .catch((e) => {
+        done(e);
+      });
+  });
+
+  it('single field in multiple validation definitions - validation success', function (done) {
+
+    let sampleObject = Ember.Controller.extend(AdvValidable, {
+      validations: [
+        {
+          fields: 'field1',
+          validator: function () {
+            return true;
+          }
+        },
+        {
+          fields: ['field2', 'field1'],
+          validator: function () {
+            return true;
+          }
+        }
+      ],
+      field1: 'test',
+      field2: 'test'
+    }).create();
+
+    let validationResult = AdvValidationManager.create().validateObject(sampleObject);
+    expect(validationResult).to.exist;
+    validationResult
+      .then((vResult) => {
+        let result = vResult;
+        var fieldValid = isFieldValid(result, 'field1');
+        expect(fieldValid).to.be.true;
+        done();
+      })
+      .catch((e) => {
+        done(e);
+      });
+  });
+
+  it('single field in multiple validation definitions - validation failed', function (done) {
+
+    let sampleObject = Ember.Controller.extend(AdvValidable, {
+      validations: [
+        {
+          fields: 'field1',
+          validator: function () {
+            return true;
+          }
+        },
+        {
+          fields: ['field2', 'field1'],
+          validator: function () {
+            return false;
+          }
+        }
+      ],
+      field1: 'test',
+      field2: 'test'
+    }).create();
+
+    let validationResult = AdvValidationManager.create().validateObject(sampleObject);
+    expect(validationResult).to.exist;
+    validationResult
+      .then((vResult) => {
+        let result = vResult;
+        var fieldValid = isFieldValid(result, 'field1');
+        expect(fieldValid).to.be.false;
         done();
       })
       .catch((e) => {

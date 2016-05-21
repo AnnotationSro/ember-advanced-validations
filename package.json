@@ -1,6 +1,6 @@
 {
   "name": "ember-advanced-validations",
-  "version": "1.3.0",
+  "version": "1.3.3",
   "description": "Advanced validation framework for ember-cli",
   "directories": {
     "doc": "doc",
@@ -18,7 +18,7 @@
   "author": "Annotation s.r.o.",
   "license": "MIT",
   "devDependencies": {
-    "bower":"1.7.7",
+    "bower": "1.7.7",
     "broccoli-asset-rev": "^2.2.0",
     "ember-cli": "1.13.13",
     "ember-cli-app-version": "^1.0.0",
