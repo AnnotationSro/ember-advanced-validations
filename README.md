@@ -1,6 +1,6 @@
 # Ember-advanced-validations
 
-![Magnum CI](https://magnum-ci.com/status/a31206ef4b8cda2bb3be5852ec2deb29.png)
+[![Build Status](https://travis-ci.org/AnnotationSro/ember-advanced-validations.svg?branch=master)](https://travis-ci.org/AnnotationSro/ember-advanced-validations)
 
 A quick summary of features provided by this validation framework:
 
