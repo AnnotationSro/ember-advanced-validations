@@ -21,7 +21,17 @@ A quick summary of features provided by this validation framework:
 
 # Usage
 
-  For a sample application refer to dummy application.
+  To run a validation on an object, run:
+  ```
+   validationService: Ember.inject.service('adv-validation-manager'),
+  
+  
+    this.get('validationService').validateObject(objectToValidate)
+        .then((validationResult) => {
+        //handle validationResult
+    });
+  ```
+
   An object you want to validate must have a `validations` array with validation definitions:
 
 ```
