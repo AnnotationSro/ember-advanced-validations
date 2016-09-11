@@ -1,6 +1,6 @@
 # Ember-advanced-validations
 
-![Magnum CI](https://magnum-ci.com/status/a31206ef4b8cda2bb3be5852ec2deb29.png)
+[![Build Status](https://travis-ci.org/AnnotationSro/ember-advanced-validations.svg?branch=master)](https://travis-ci.org/AnnotationSro/ember-advanced-validations)
 
 A quick summary of features provided by this validation framework:
 
@@ -16,12 +16,22 @@ A quick summary of features provided by this validation framework:
 * Validation messages per field
     * Full support of i18n (via [ember-i18n addon](https://github.com/jamesarosen/ember-i18n))
     * Custom validation messages can override default ones provided by this framework    
-
+* helper to check if speficiec [field is valid or retrieve its validation message](#validation-helpers)
 
 
 # Usage
 
-  For a sample application refer to dummy application.
+  To run a validation on an object, run:
+  ```
+   validationService: Ember.inject.service('adv-validation-manager'),
+  
+  
+    this.get('validationService').validateObject(objectToValidate)
+        .then((validationResult) => {
+        //handle validationResult
+    });
+  ```
+
   An object you want to validate must have a `validations` array with validation definitions:
 
 ```
@@ -46,19 +56,19 @@ You can also define validations in more complex way that enables more customizat
 
 Note that both notations above are equivalent, the second one however enables more features and more customization options like these:
 
-  | Attribute           | Description                                                                                                                                                                            |   |   |   |
-  |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---|---|---|
-  | `fields`            | one or multiple object fields/properties that you want to validate (they will be passed as input into validation function)                                                             |   |   |   |
-  | `validator`         | _string_ with a name of a validation or a validation function (see below for more about [validation functions](#custom-validations))                                                                          |   |   |   |
-  | `config`            | a JSON with configuration passed into validation function                                                                                                                              |   |   |   |
-  | `id`                | validation definition unique ID                                                                                                                                                        |   |   |   |
-  | `runIf`             | condition when a validation should be enabled; could be a _string_ (property on object being validated), array of _strings_ (properties) or _runIf function_ (see below for [more info](#conditional-validations)) |   |   |   |
-  | `dependsOn`         | ID of a depending validation definition; this validation will be run only if validation definition resolves as _true_/_valid_                                                          |   |   |   |
-  | `validationMessage` | message the be used when field/fields are invalid; if you use [ember-i18n](https://github.com/jamesarosen/ember-i18n) addon, `validationMessage` will be automatically passed as a key to ember-i18n and you will be provided with a translated message  (this can be configured in [global configuration](#global-configuration) - by default, ember-i18n is not used)                                                                                                                                   |   |   |   |
-  | `realtime`          | _boolean_ property; if _true_ this validation will be run automatically whenever any of the `fields` properties change (default is _false_); to define a debounce time, you can optionally configure the debounce in `config` JSON with parameter `debounceTime` or in [global configuration](#global-configuration)                                             |   |   |   |
-  | `params` | JSON that won't affect validation in any way - it is just a way to pass parameters from validation object to controller or wherever you process the validation result                                                                                                                                      |   |   |   |
+| Attribute           | Description                                                                                                                                                                                                                                                                                                                                                            |
+|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `fields`            | one or multiple object fields/properties that you want to validate (they will be passed as input into validation function)                                                                                                                                                                                                                                             |
+| `validator`         | _string_ with a name of a validation or a validation function (see below for more about [validation functions](#custom-validations))                                                                                                                                                                                                                                   |
+| `config`            | a JSON with configuration passed into validation function                                                                                                                                                                                                                                                                                                              |
+| `id`                | validation definition unique ID                                                                                                                                                                                                                                                                                                                                        |
+| `runIf`             | condition when a validation should be enabled; could be a _string_ (property on object being validated), array of _strings_ (properties) or _runIf function_ (see below for [more info](#conditional-validations))                                                                                                                                                     |
+| `dependsOn`         | ID of a depending validation definition; this validation will be run only if validation definition resolves as _true_/_valid_                                                                                                                                                                                                                                          |
+| `validationMessage` | message the be used when field/fields are invalid; if you use [ember-i18n](https://github.com/jamesarosen/ember-i18n) addon, `validationMessage` will be automatically passed as a key to ember-i18n and you will be provided with a translated message,(this can be configured in [global configuration](#global-configuration) - by default, ember-i18n is not used) |
+| `realtime`          | _boolean_ property; if _true_ this validation will be run automatically whenever any of the `fields` properties change (default is _false_); to define a debounce time, you can optionally configure the debounce in `config` JSON with parameter `debounceTime` or in [global configuration](#global-configuration)                                                   |
+| `params`            | JSON that won't affect validation in any way - it is just a way to pass parameters from validation object to controller or wherever you process the validation result                                                                                                                                                                                                  |
 
-  ### Available pre-defined validations
+### Available pre-defined validations
 
 | Validation name | Description                                                                | Configuration                           |
 |-----------------|----------------------------------------------------------------------------|-----------------------------------------|
@@ -111,6 +121,7 @@ Usage:
   ```
 
 Besides a required `validate` function you can also define these properties:
+
 | Property            | Description                                                                   |   |
 |---------------------|-------------------------------------------------------------------------------|---|
 | `isAsync`           | if true, the validation is required to return a _Promise_; default is _false_ |   |
@@ -160,6 +171,28 @@ Optionally you can run a certain validation based on some dynamic condition:
       field2: 'runMe'
     }
 ```
+
+## Validation helpers
+
+You can make use of 2 helpers provided by this addon:
+ - **getValidationMessage** - retrieves validation message for specified field
+ - **isFieldValid** - returns simple true/false if specified field is valid
+ 
+```
+{{getValidationMessage field='myField' validationResult=validationResult}}
+```
+
+```
+{{isFieldValid field='myField' validationResult=validationResult}}
+```
+or in JS
+```
+import {isFieldValid, getValidationMessage} from 'ember-advanced-validations/helpers/is-field-valid';
+
+var fieldValid = isFieldValid(validationResult, 'myField');
+var validationMessage = getValidationMessage(validationResult, 'myField');
+```
+ 
 
 ## Global configuration
 
