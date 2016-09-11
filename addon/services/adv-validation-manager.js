@@ -3,6 +3,7 @@ import AdvValidator from '../mixins/adv-validator';
 import _ from 'lodash/lodash';
 import getOwner from 'ember-getowner-polyfill';
 import configuration from '../configuration';
+import isHTMLSafe from 'ember-string-ishtmlsafe-polyfill';
 
 class AwaitingValidation {
   constructor(dependsOn, validatorFn) {
@@ -480,8 +481,8 @@ export default Ember.Service.extend({
 
     if (Ember.isPresent(i18n)) {
       formatted = i18n.t(validationMessage);
-      if (formatted instanceof Ember.Handlebars.SafeString) {
-        formatted = formatted.string;
+      if (isHTMLSafe(formatted)) {
+        formatted = formatted.toString();
       }
     } else {
       formatted = validationMessage;
