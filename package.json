@@ -52,7 +52,6 @@
     "validation"
   ],
   "dependencies": {
-    "ember-lodash": "0.0.6"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"

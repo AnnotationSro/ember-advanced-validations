@@ -1,3 +1,6 @@
+## 1.2.0 - Feb 03, 2017 6:28pm
+  - got rid of lodash dependency (shaved of 30KB gzipped)
+
 ## 1.1.0 - Jan 21, 2015 2:11pm
 - validation result contains not only detailed results per field, but also:
   - information if object being validated is valid or not (property "valid" - true/false)
