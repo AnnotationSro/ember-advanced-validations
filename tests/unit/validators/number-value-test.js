@@ -1,13 +1,15 @@
 import { expect } from 'chai';
-import { describeModule, it } from 'ember-mocha';
+import { it, describe } from 'mocha';
+import { setupTest } from 'ember-mocha';
 
 import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 
 
-describeModule('service:adv-validation-manager', 'Unit : Validator : Numeric value validator', {
-  needs: ['validator:number-value']
-}, function () {
+describe('Unit : Validator : Numeric value validator', function () {
+  setupTest('service:adv-validation-manager', {
+    needs: ['validator:number-value', 'service:i18n']
+  });
 
   it('valid object - minValue', function (done) {
     let service = this.subject();
@@ -239,6 +241,4 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : Numeric val
         done(e);
       });
   });
-
-
 });

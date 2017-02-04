@@ -1,13 +1,15 @@
 import { expect } from 'chai';
-import { describeModule, it } from 'ember-mocha';
+import { it, describe } from 'mocha';
+import { setupTest } from 'ember-mocha';
 
 import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 
 
-describeModule('service:adv-validation-manager', 'Unit : Validator : Regex validator', {
-  needs:['validator:regex']
-}, function () {
+describe('Unit : Validator : Regex validator', function () {
+  setupTest('service:adv-validation-manager', {
+    needs:['validator:regex', 'service:i18n']
+  });
 
 
   it('valid object', function (done) {
@@ -205,5 +207,4 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : Regex valid
         done(e);
       });
   });
-
 });

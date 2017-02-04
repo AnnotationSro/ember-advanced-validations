@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import AdvValidator from '../mixins/adv-validator';
-import getOwner from 'ember-getowner-polyfill';
 import configuration from '../configuration';
 import isHTMLSafe from 'ember-string-ishtmlsafe-polyfill';
 
@@ -429,7 +428,7 @@ export default Ember.Service.extend({
   },
 
   _getValidatorFromModule(validatorModuleName) {
-    let validatorModule = getOwner(this).lookup(`validator:${validatorModuleName}`);
+    let validatorModule = Ember.getOwner(this).lookup(`validator:${validatorModuleName}`);
 
     Ember.assert(`Validator "validators:${validatorModuleName}" does not exist.`, Ember.isPresent(validatorModule));
     Ember.assert(`Validator ${validatorModuleName} does not implement mixin AdvValidator`, AdvValidator.detect(validatorModule));
@@ -452,7 +451,7 @@ export default Ember.Service.extend({
             try {
               //this try/catch is a workaround for Ember Error: "registry.resolver.resolve is not a function"
               //which happens when service i18n is not registered - I guess....:(
-              i18n = getOwner(this).lookup('service:i18n');
+              i18n = Ember.getOwner(this).lookup('service:i18n');
             } catch (e) {
               //nothing, just leave i18n as null
             }

@@ -1,8 +1,6 @@
 {
   "name": "ember-advanced-validations",
   "dependencies": {
-    "ember": "2.9.0-beta.1",
-    "ember-cli-shims": "0.1.1",
-    "ember-mocha": "^0.8.11"
+    "ember-mocha": "^0.11.0"
   }
 }

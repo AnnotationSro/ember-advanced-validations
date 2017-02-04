@@ -1,13 +1,15 @@
 import { expect } from 'chai';
-import { describeModule, it } from 'ember-mocha';
+import { it, describe } from 'mocha';
+import { setupTest } from 'ember-mocha';
 
 import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 
 
-describeModule('service:adv-validation-manager', 'Unit : Validator : String length validator', {
-  needs: ['validator:length']
-}, function () {
+describe('Unit : Validator : String length validator', function () {
+  setupTest('service:adv-validation-manager', {
+    needs: ['validator:length', 'service:i18n']
+  });
 
   it('valid object - exact length', function (done) {
     let service = this.subject();
@@ -333,7 +335,4 @@ describeModule('service:adv-validation-manager', 'Unit : Validator : String leng
         done(e);
       });
   });
-
-
-
 });

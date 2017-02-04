@@ -1,14 +1,16 @@
 import { expect } from 'chai';
-import { describeModule, it } from 'ember-mocha';
+import { it, describe } from 'mocha';
+import { setupTest } from 'ember-mocha';
 
 import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 import AdvValidator from 'ember-advanced-validations/mixins/adv-validator';
 
 
-describeModule('service:adv-validation-manager', 'Unit : Service : adv validation manager - dependsOn', {
-  // Specify the other units that are required for this test.
-}, function () {
+describe('Unit : Service : adv validation manager - dependsOn', function () {
+  setupTest('service:adv-validation-manager', {
+      needs: ['service:i18n']
+  });
 
 
   it('should run - 1 depending validator', function (done) {
@@ -247,6 +249,4 @@ describeModule('service:adv-validation-manager', 'Unit : Service : adv validatio
         done(e);
       });
   });
-
-
 });
