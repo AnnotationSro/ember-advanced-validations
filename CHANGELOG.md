@@ -1,4 +1,4 @@
-## 1.5.0
+## 1.6.0
   - added validation parameters
 
 ## 1.4.0
