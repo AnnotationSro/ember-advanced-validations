@@ -24,8 +24,8 @@ A quick summary of features provided by this validation framework:
   To run a validation on an object, run:
   ```
    validationService: Ember.inject.service('adv-validation-manager'),
-  
-  
+
+
     this.get('validationService').validateObject(objectToValidate)
         .then((validationResult) => {
         //handle validationResult
@@ -67,6 +67,15 @@ Note that both notations above are equivalent, the second one however enables mo
 | `validationMessage` | message the be used when field/fields are invalid; if you use [ember-i18n](https://github.com/jamesarosen/ember-i18n) addon, `validationMessage` will be automatically passed as a key to ember-i18n and you will be provided with a translated message,(this can be configured in [global configuration](#global-configuration) - by default, ember-i18n is not used) |
 | `realtime`          | _boolean_ property; if _true_ this validation will be run automatically whenever any of the `fields` properties change (default is _false_); to define a debounce time, you can optionally configure the debounce in `config` JSON with parameter `debounceTime` or in [global configuration](#global-configuration)                                                   |
 | `params`            | JSON that won't affect validation in any way - it is just a way to pass parameters from validation object to controller or wherever you process the validation result                                                                                                                                                                                                  |
+
+### Validation parameters
+Optionally you can pass a JSON with validation parameters to the validation process. Validation parameters will be available in `runIf` and `validate` functions as a last argument.
+
+```
+let params = {hello: 'world'};
+
+this.get('validationService').validateObject(objectToValidate, params)
+```
 
 ### Available pre-defined validations
 
@@ -177,7 +186,7 @@ Optionally you can run a certain validation based on some dynamic condition:
 You can make use of 2 helpers provided by this addon:
  - **getValidationMessage** - retrieves validation message for specified field
  - **isFieldValid** - returns simple true/false if specified field is valid
- 
+
 ```
 {{getValidationMessage field='myField' validationResult=validationResult}}
 ```
@@ -192,7 +201,7 @@ import {isFieldValid, getValidationMessage} from 'ember-advanced-validations/hel
 var fieldValid = isFieldValid(validationResult, 'myField');
 var validationMessage = getValidationMessage(validationResult, 'myField');
 ```
- 
+
 
 ## Global configuration
 

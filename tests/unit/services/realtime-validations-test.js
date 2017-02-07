@@ -23,12 +23,16 @@ describe(
 
     it('validates one field', function (done) {
       let service = this.subject();
+      let hasParams = false;
 
       let sampleObject = Ember.Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
-            validator: function () {
+            validator: function (field, config, params) {
+              if (params && params.hello === 'world'){
+                hasParams = true;
+              }
               return true;
             },
             realtime: true
@@ -42,11 +46,13 @@ describe(
         expect(result).to.exist;
         expect(result.length).to.equal(1);
         expect(result[0]).to.deep.equal({fields: 'field1', result: [], params: {}}, JSON.stringify(result[0]));
+
+        expect(hasParams).to.be.true;
         done();
 
       };
 
-      service.startRealtimeValidation(sampleObject, onValidation);
+      service.startRealtimeValidation(sampleObject, onValidation, {hello: 'world'});
 
       //trigger runtime validation
       sampleObject.set('field1', 'hello');

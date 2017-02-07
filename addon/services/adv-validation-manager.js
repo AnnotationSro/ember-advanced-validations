@@ -26,10 +26,11 @@ export default Ember.Service.extend({
    * }
    *
    * @param  {any Ember object} emberObject Ember object to validate
+   * @param {JSON} validationParams parameters that will be passed into validation - can be used during validation process, runIf function, ...
    * @return {Promise} validation result
    * @public
    */
-  validateObject(emberObject) {
+  validateObject(emberObject, validationParams) {
     Ember.assert("Cannot validate null or undefined object", Ember.isPresent(emberObject));
     let allFieldValidations = emberObject.get('validations');
 
@@ -64,13 +65,13 @@ export default Ember.Service.extend({
       allFieldValidations.forEach((fieldValidation) => {
         let dependsOnValidations = fieldValidation['dependsOn'];
         if (this._validationDependenciesResolved(dependsOnValidations, validationResultMap)) {
-          this._runSingleValidation(emberObject, fieldValidation, doneValidationPartialFn, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult);
+          this._runSingleValidation(emberObject, validationParams, fieldValidation, doneValidationPartialFn, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult);
         } else {
 
           awaitingValidations.push(new AwaitingValidation(
             dependsOnValidations,
             () => {
-              this._runSingleValidation(emberObject, fieldValidation, doneValidationPartialFn, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult);
+              this._runSingleValidation(emberObject, validationParams, fieldValidation, doneValidationPartialFn, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult);
             }));
         }
       });
@@ -92,11 +93,12 @@ export default Ember.Service.extend({
    *
    * @param  {any Ember object} emberObject Ember object to validate
    * @param {callback} function to be called when validation is done - function should accept one parameter - validation result
+   * @param {JSON} validationParams parameters that will be passed into validation - can be used during validation process, runIf function, ...
    * @return {Promise} validation result
    * @public
 
    */
-  startRealtimeValidation(emberObject, onValidationCallback) {
+  startRealtimeValidation(emberObject, onValidationCallback, validationParams) {
     Ember.assert("Cannot validate null or undefined object", Ember.isPresent(emberObject));
     Ember.assert("It seems you forgot to specify 'onValidationCallback'", Ember.isPresent(onValidationCallback));
 
@@ -124,7 +126,7 @@ export default Ember.Service.extend({
 
         let validationPromise = new Ember.RSVP.Promise((resolve, reject) => {
           let doneValidationPartialFn = this._doneValidation(resolve, emberObject);
-          this._runSingleValidation(emberObject, validationDef, doneValidationPartialFn, reject, validationResultMap, validationPromises, awaitingValidations, validationResult);
+          this._runSingleValidation(emberObject, validationParams, validationDef, doneValidationPartialFn, reject, validationResultMap, validationPromises, awaitingValidations, validationResult);
         });
 
         validationPromise.then((result) => {
@@ -247,7 +249,7 @@ export default Ember.Service.extend({
     }
   },
 
-  _runSingleValidation: function(emberObject, fieldValidation, resolveValidationPromise, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult) {
+  _runSingleValidation: function(emberObject, validationParams, fieldValidation, resolveValidationPromise, rejectValidationPromise, validationResultMap, validationPromises, awaitingValidations, validationResult) {
     let fields = fieldValidation['fields'];
     let validatorArray = fieldValidation['validator'];
     let validationMessage = fieldValidation['validationMessage'];
@@ -262,10 +264,10 @@ export default Ember.Service.extend({
       return;
     }
 
-    if (!this._canRunValidation(emberObject, runIfFields)) {
+    if (!this._canRunValidation(emberObject, validationParams, runIfFields)) {
       return;
     }
-    var singleFieldValidation = this._createSingleFieldValidation(fields, emberObject, validatorArray, fieldValidation, validationMessage);
+    var singleFieldValidation = this._createSingleFieldValidation(fields, emberObject, validationParams, validatorArray, fieldValidation, validationMessage);
 
     validationPromises.push(singleFieldValidation);
 
@@ -310,7 +312,7 @@ export default Ember.Service.extend({
     });
   },
 
-  _createSingleFieldValidation: function(fields, emberObject, validatorArray, fieldValidation, validationMessage) {
+  _createSingleFieldValidation: function(fields, emberObject, validationParams, validatorArray, fieldValidation, validationMessage) {
     //get values for validation field/fields
     let validatorFields = [];
     if (Ember.isArray(fields)) {
@@ -336,7 +338,7 @@ export default Ember.Service.extend({
           config = fieldValidation.config[validator] || fieldValidation.config;
         }
       }
-      let singleValidation = this._runValidation(validationDef, validatorFields, config, validationMessage);
+      let singleValidation = this._runValidation(validationDef, validatorFields, config, validationMessage, validationParams);
       fieldValidations.push(singleValidation);
     });
 
@@ -357,7 +359,7 @@ export default Ember.Service.extend({
     return singleFieldValidation;
   },
 
-  _canRunValidation(validationObject, conditionFields) {
+  _canRunValidation(validationObject, validationParams, conditionFields) {
     if (Ember.isEmpty(conditionFields)) {
       return true;
     }
@@ -370,7 +372,7 @@ export default Ember.Service.extend({
     if (typeof conditionFields[conditionFields.length - 1] === 'function') {
       let conditionFunction = conditionFields[conditionFields.length - 1];
       let conditionArguments = conditionFields.slice(0, conditionFields.length - 1).map((field) => validationObject.get(field));
-      return conditionFunction(...conditionArguments);
+      return conditionFunction(...conditionArguments, validationParams);
     } else {
       //nope, just a simple array with properties
       return conditionFields.map((field) => !!validationObject.get(field)).every((item) => item === true);
@@ -401,14 +403,14 @@ export default Ember.Service.extend({
     Ember.assert(`Cannot determine a validation function for: ${validatorDef}`);
   },
 
-  _runValidation(validator, fields, config, userDefinedValidationMessage) {
+  _runValidation(validator, fields, config, userDefinedValidationMessage, validationParams) {
 
     Ember.assert("Cannot determine if validation is async or not - please override 'isAsync' property in your validator", Ember.isPresent(validator.get('isAsync')));
 
     let validationPromise;
     if (validator.get('isAsync')) {
       validationPromise = new Ember.RSVP.Promise((resolve, reject) => {
-        validator.validate(config, ...fields).then((result) => {
+        validator.validate(config, ...fields, validationParams).then((result) => {
             this._handleValidationResult(result, fields, config, validator, userDefinedValidationMessage, resolve, reject);
           })
           .catch((err) => reject(err));
@@ -417,7 +419,7 @@ export default Ember.Service.extend({
     } else {
       validationPromise = new Ember.RSVP.Promise((resolve, reject) => {
         try {
-          var result = validator.validate(...fields, config);
+          var result = validator.validate(...fields, config, validationParams);
           this._handleValidationResult(result, fields, config, validator, userDefinedValidationMessage, resolve, reject);
         } catch (e) {
           reject(e);
