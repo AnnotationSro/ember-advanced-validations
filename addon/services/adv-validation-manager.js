@@ -264,7 +264,8 @@ export default Ember.Service.extend({
       return;
     }
 
-    if (!this._canRunValidation(emberObject, validationParams, runIfFields)) {
+    let config = this._getFieldConfig(validatorArray, fieldValidation);
+    if (!this._canRunValidation(emberObject, validationParams, config, runIfFields)) {
       return;
     }
     var singleFieldValidation = this._createSingleFieldValidation(fields, emberObject, validationParams, validatorArray, fieldValidation, validationMessage);
@@ -312,6 +313,18 @@ export default Ember.Service.extend({
     });
   },
 
+  _getFieldConfig(validatorArray, fieldValidation, validator){
+    if (fieldValidation.config) {
+      //if there is just one validation, the whole config belongs to this validation
+      if (validatorArray.length === 1) {
+        return fieldValidation.config;
+      } else {
+        return fieldValidation.config[validator] || fieldValidation.config;
+      }
+    }
+    return {};
+  },
+
   _createSingleFieldValidation: function(fields, emberObject, validationParams, validatorArray, fieldValidation, validationMessage) {
     //get values for validation field/fields
     let validatorFields = [];
@@ -329,15 +342,7 @@ export default Ember.Service.extend({
     validatorArray.forEach((validator) => {
       //get validation definition
       let validationDef = this._getValidationDefinition(validator);
-      let config = {};
-      if (fieldValidation.config) {
-        //if there is just one validation, the whole config belongs to this validation
-        if (validatorArray.length === 1) {
-          config = fieldValidation.config;
-        } else {
-          config = fieldValidation.config[validator] || fieldValidation.config;
-        }
-      }
+      let config = this._getFieldConfig(validatorArray, fieldValidation, validator);
       let singleValidation = this._runValidation(validationDef, validatorFields, config, validationMessage, validationParams);
       fieldValidations.push(singleValidation);
     });
@@ -359,7 +364,7 @@ export default Ember.Service.extend({
     return singleFieldValidation;
   },
 
-  _canRunValidation(validationObject, validationParams, conditionFields) {
+  _canRunValidation(validationObject, validationParams, fieldConfig, conditionFields) {
     if (Ember.isEmpty(conditionFields)) {
       return true;
     }
@@ -372,7 +377,7 @@ export default Ember.Service.extend({
     if (typeof conditionFields[conditionFields.length - 1] === 'function') {
       let conditionFunction = conditionFields[conditionFields.length - 1];
       let conditionArguments = conditionFields.slice(0, conditionFields.length - 1).map((field) => validationObject.get(field));
-      return conditionFunction(...conditionArguments, validationParams);
+      return conditionFunction(...conditionArguments, fieldConfig, validationParams);
     } else {
       //nope, just a simple array with properties
       return conditionFields.map((field) => !!validationObject.get(field)).every((item) => item === true);

@@ -169,17 +169,20 @@ Optionally you can run a certain validation based on some dynamic condition:
           fields: 'field1',
           validator: 'NotEmpty',
           runIf: [
-            'field2', //<--- list of fields that will be passed as input parameters to runIf function
-            function (f1) { //values of fields specified above in the same order
-              return f1 === 'runMe';
+            'field2', //<--- list of fields that will be passed as input parameters to runIf function            
+            'field3',
+            function (f2, f3, validationConfig, validationParams) { //values of fields specified above in the same order + validation config (see 'config' attribute in chapter 'Usage' in README) + validation params (see chapter README 'Validation parameters')
+              return f2 === 'runMe';
             }
           ]
         }
       ],
       field1: 'test',
-      field2: 'runMe'
+      field2: 'runMe',
+      field3: 'hello'
     }
 ```
+Complete list of arguments of `runIf` function are (in this order): fields that are being validated, validation configuration,
 
 ## Validation helpers
 

@@ -252,17 +252,25 @@ describe(
 
       let assertValidatorRun = 0;
       let hasParams = false;
+      let hasConfig = false;
 
       var validationObject = Ember.Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
             validator: 'test-validator',
-            runIf: function (params) {
+
+            runIf: function (config, params) {
               if (params && params.hello === 'world'){
                 hasParams = true;
               }
+              if (config && config.myConfig === 42){
+                hasConfig = true;
+              }
               return true;
+            },
+            config: {
+              myConfig: 42
             }
           }
         ],
@@ -288,6 +296,7 @@ describe(
         .then((vResult) => {
 
           expect(hasParams).to.be.true;
+          expect(hasConfig).to.be.true;
 
           let result = vResult.result;
           expect(result).to.exist;
@@ -314,7 +323,7 @@ describe(
             validator: 'test-validator',
             runIf: [
               'field2',
-              function (f1, params) {
+              function (f1, config, params) {
                 if (params && params.hello === 'world'){
                   hasParams = true;
                 }
