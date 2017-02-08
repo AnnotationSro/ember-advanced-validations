@@ -1,3 +1,6 @@
+## 1.7.0
+  - added config parameter to `runIf` function
+
 ## 1.6.0
   - added validation parameters
 
