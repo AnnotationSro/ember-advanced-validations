@@ -4,7 +4,7 @@
 
 A quick summary of features provided by this validation framework:
 
-* Validate any Ember object, such as ember-data model, [Object](http://emberjs.com/api/classes/Ember.Object.html), [Controller] (http://emberjs.com/api/classes/Ember.Controller.html), .. basically anything
+* Validate any Ember object, such as ember-data model, [Object](http://emberjs.com/api/classes/Ember.Object.html), [Controller](http://emberjs.com/api/classes/Ember.Controller.html), .. basically anything
 * Apply pre-defined validations or easily **create your own** (and reuse them afterwards)
 * Configure validations
 * Run validations in async (by default - without the need to configure it)
