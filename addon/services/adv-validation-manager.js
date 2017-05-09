@@ -19,6 +19,7 @@ export default Ember.Service.extend({
    * {
    *   id: [required only if you want to use "dependsOn"]
    *   fields:
+   *   customValidationId:
    *   validator:
    *   validationMessage:
    *   dependsOn:
@@ -352,7 +353,7 @@ export default Ember.Service.extend({
       //check if all validations on this field are true - only then resolve this field as valid
       new Ember.RSVP.all(fieldValidations).then((result) => {
         resolve({
-          fields: fields,
+          fields: fieldValidation.customValidationId || fields,
           result: result.filter((r) => r !== true),
           params: fieldValidation.params || {}
         });

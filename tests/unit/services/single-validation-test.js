@@ -75,6 +75,37 @@ describe(
         });
     });
 
+    it('validates one field + custom validation ID in the result', function (done) {
+      let service = this.subject();
+
+      let sampleObject = Ember.Controller.extend(AdvValidable, {
+        validations: [
+          {
+            fields: 'field1',
+            customValidationId: 'hello',
+            validator: function () {
+              return true;
+            }
+          }
+        ],
+        field1: 'test'
+      }).create();
+
+      let validationResult = service.validateObject(sampleObject);
+      expect(validationResult).to.exist;
+      validationResult
+        .then((vResult) => {
+          let result = vResult.result;
+          expect(result).to.exist;
+          expect(result.length).to.equal(1);
+          expect(result[0]).to.deep.equal({fields:'hello', result: [], params: {}}, JSON.stringify(result[0]));
+          done();
+        })
+        .catch((e) => {
+          done(e);
+        });
+    });
+
     it('validates one field + direct function - with argument manipulation', function (done) {
       let service = this.subject();
 
