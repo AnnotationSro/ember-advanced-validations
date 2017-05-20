@@ -104,6 +104,7 @@ describe(
       this.register('validator:test-validator', testValidator);
 
       configuration.setProperty('i18n_enabled', false);
+      service.set('i18n', null);//hack because validation service is already initialized
 
       let validationResult = service.validateObject(sampleObject);
       expect(validationResult).to.exist;

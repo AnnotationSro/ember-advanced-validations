@@ -11,7 +11,24 @@ class AwaitingValidation {
 
 export default Ember.Service.extend({
 
-  i18n: Ember.inject.service('i18n'),
+  i18n: null,
+
+
+  init(){
+    this._super(...arguments);
+
+    if (configuration.isI18N()) {
+      try {
+        //this try/catch is a workaround for Ember Error: "registry.resolver.resolve is not a function"
+        //which happens when service i18n is not registered - I guess....:(
+        let i18n = Ember.getOwner(this).lookup('service:i18n');
+        this.set('i18n', i18n);
+
+      } catch (e) {
+        //nothing, just leave i18n as null
+      }
+    }
+  },
 
   /**
    * Explicit call to validate an Ember object (Controller, Component, Model,...)
@@ -451,20 +468,7 @@ export default Ember.Service.extend({
 
         let message = userDefinedValidationMessage || validator.validationMessage;
         if (Ember.isPresent(message)) {
-
-          let i18n = null;
-
-          if (configuration.isI18N()) {
-            try {
-              //this try/catch is a workaround for Ember Error: "registry.resolver.resolve is not a function"
-              //which happens when service i18n is not registered - I guess....:(
-              i18n = Ember.getOwner(this).lookup('service:i18n');
-            } catch (e) {
-              //nothing, just leave i18n as null
-            }
-          }
-
-          resolve(this._formatValidationMessage(message, fields, config, i18n));
+          resolve(this._formatValidationMessage(message, fields, config, this.get('i18n')));
         } else {
           resolve(false);
         }
