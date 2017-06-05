@@ -14,7 +14,7 @@ export default Ember.Service.extend({
   i18n: null,
 
 
-  init(){
+  init() {
     this._super(...arguments);
 
     if (configuration.isI18N()) {
@@ -51,8 +51,6 @@ export default Ember.Service.extend({
     Ember.assert("Cannot validate null or undefined object", Ember.isPresent(emberObject));
     let allFieldValidations = emberObject.get('validations');
 
-    allFieldValidations = this._convertSimpleValidationDefinitions(allFieldValidations);
-
     let validationPromises = [];
 
     //array of validations to be run -> to start an awaiting validations execute them as functions (since elements in this array are functions)
@@ -68,6 +66,7 @@ export default Ember.Service.extend({
     });
 
 
+
     //map of validations that were already resolved with a validation result (true/false)
     //key = validationID, value=true/false
     //validations without ID won't be in this map
@@ -75,6 +74,13 @@ export default Ember.Service.extend({
 
     let doneValidationPartialFn = this._doneValidation(resolveValidationPromise, emberObject);
 
+
+    if (Ember.isEmpty(allFieldValidations)) {
+      doneValidationPartialFn(validationResult);
+      return validationDonePromise;
+    }
+
+    allFieldValidations = this._convertSimpleValidationDefinitions(allFieldValidations);
     if (Ember.isEmpty(allFieldValidations)) {
       doneValidationPartialFn(validationResult);
     } else {
@@ -330,7 +336,7 @@ export default Ember.Service.extend({
     });
   },
 
-  _getFieldConfig(validatorArray, fieldValidation, validator){
+  _getFieldConfig(validatorArray, fieldValidation, validator) {
     if (fieldValidation.config) {
       //if there is just one validation, the whole config belongs to this validation
       if (validatorArray.length === 1) {

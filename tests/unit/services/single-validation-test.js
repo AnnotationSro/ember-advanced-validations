@@ -1,6 +1,13 @@
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
-import { setupTest } from 'ember-mocha';
+import {
+  expect
+} from 'chai';
+import {
+  it,
+  describe
+} from 'mocha';
+import {
+  setupTest
+} from 'ember-mocha';
 
 import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
@@ -9,17 +16,17 @@ import AdvValidator from 'ember-advanced-validations/mixins/adv-validator';
 
 describe(
   'Unit : Service : adv validation manager - single validator',
-  function () {
+  function() {
     setupTest('service:adv-validation-manager', {
-        needs: ['service:i18n']
+      needs: ['service:i18n']
     });
 
-    it('exists', function () {
+    it('exists', function() {
       let service = this.subject();
       expect(service).to.exist;
     });
 
-    it('validates no field + direct function', function (done) {
+    it('validates no field + direct function', function(done) {
       let service = this.subject();
 
       let sampleObject = Ember.Controller.extend(AdvValidable, {
@@ -45,18 +52,41 @@ describe(
 
     });
 
-    it('validates one field + direct function', function (done) {
+
+    it('validates object without validation definitions', function(done) {
+      let service = this.subject();
+
+      let sampleObject = Ember.Controller.extend(AdvValidable, {}).create();
+
+      let validationResult = service.validateObject(sampleObject);
+      expect(validationResult).to.exist;
+      validationResult
+        .then((vResult) => {
+          let result = vResult.result;
+          expect(result).to.exist;
+          expect(result.length).to.equal(0);
+
+          expect(vResult.valid).to.be.true;
+          expect(vResult.target).to.deep.equal(sampleObject);
+
+          done();
+        })
+        .catch((e) => {
+          done(e);
+        });
+
+    });
+
+    it('validates one field + direct function', function(done) {
       let service = this.subject();
 
       let sampleObject = Ember.Controller.extend(AdvValidable, {
-        validations: [
-          {
-            fields: 'field1',
-            validator: function () {
-              return true;
-            }
+        validations: [{
+          fields: 'field1',
+          validator: function() {
+            return true;
           }
-        ],
+        }],
         field1: 'test'
       }).create();
 
@@ -67,7 +97,11 @@ describe(
           let result = vResult.result;
           expect(result).to.exist;
           expect(result.length).to.equal(1);
-          expect(result[0]).to.deep.equal({fields:'field1', result: [], params: {}}, JSON.stringify(result[0]));
+          expect(result[0]).to.deep.equal({
+            fields: 'field1',
+            result: [],
+            params: {}
+          }, JSON.stringify(result[0]));
           done();
         })
         .catch((e) => {
@@ -75,19 +109,17 @@ describe(
         });
     });
 
-    it('validates one field + custom validation ID in the result', function (done) {
+    it('validates one field + custom validation ID in the result', function(done) {
       let service = this.subject();
 
       let sampleObject = Ember.Controller.extend(AdvValidable, {
-        validations: [
-          {
-            fields: 'field1',
-            customValidationId: 'hello',
-            validator: function () {
-              return true;
-            }
+        validations: [{
+          fields: 'field1',
+          customValidationId: 'hello',
+          validator: function() {
+            return true;
           }
-        ],
+        }],
         field1: 'test'
       }).create();
 
@@ -98,7 +130,11 @@ describe(
           let result = vResult.result;
           expect(result).to.exist;
           expect(result.length).to.equal(1);
-          expect(result[0]).to.deep.equal({fields:'hello', result: [], params: {}}, JSON.stringify(result[0]));
+          expect(result[0]).to.deep.equal({
+            fields: 'hello',
+            result: [],
+            params: {}
+          }, JSON.stringify(result[0]));
           done();
         })
         .catch((e) => {
@@ -106,18 +142,16 @@ describe(
         });
     });
 
-    it('validates one field + direct function - with argument manipulation', function (done) {
+    it('validates one field + direct function - with argument manipulation', function(done) {
       let service = this.subject();
 
       let sampleObject = Ember.Controller.extend(AdvValidable, {
-        validations: [
-          {
-            fields: 'field1',
-            validator: function (arg) {
-              return arg === 'test';
-            }
+        validations: [{
+          fields: 'field1',
+          validator: function(arg) {
+            return arg === 'test';
           }
-        ],
+        }],
         field1: 'test'
       }).create();
 
@@ -128,7 +162,11 @@ describe(
           let result = vResult.result;
           expect(result).to.exist;
           expect(result.length).to.equal(1);
-          expect(result[0]).to.deep.equal({fields:'field1', result: [], params: {}}, JSON.stringify(result[0]));
+          expect(result[0]).to.deep.equal({
+            fields: 'field1',
+            result: [],
+            params: {}
+          }, JSON.stringify(result[0]));
 
           expect(vResult.valid).to.be.true;
           expect(vResult.target).to.deep.equal(sampleObject);
@@ -139,18 +177,16 @@ describe(
         });
     });
 
-    it('validates multiple fields + direct function - with argument manipulation', function (done) {
+    it('validates multiple fields + direct function - with argument manipulation', function(done) {
       let service = this.subject();
 
       let sampleObject = Ember.Controller.extend(AdvValidable, {
-        validations: [
-          {
-            fields: ['field1', 'field2'],
-            validator: function (arg1, arg2) {
-              return arg1 === 'test' && arg2 === 42;
-            }
+        validations: [{
+          fields: ['field1', 'field2'],
+          validator: function(arg1, arg2) {
+            return arg1 === 'test' && arg2 === 42;
           }
-        ],
+        }],
         field1: 'test',
         field2: 42
       }).create();
@@ -162,7 +198,11 @@ describe(
           let result = vResult.result;
           expect(result).to.exist;
           expect(result.length).to.equal(1);
-          expect(result[0]).to.deep.equal({fields:['field1', 'field2'], result: [], params: {}}, JSON.stringify(result[0]));
+          expect(result[0]).to.deep.equal({
+            fields: ['field1', 'field2'],
+            result: [],
+            params: {}
+          }, JSON.stringify(result[0]));
 
           expect(vResult.valid).to.be.true;
           expect(vResult.target).to.deep.equal(sampleObject);
@@ -174,20 +214,18 @@ describe(
 
     });
 
-    it('validates one nested field + direct function - with argument manipulation', function (done) {
+    it('validates one nested field + direct function - with argument manipulation', function(done) {
       let service = this.subject();
 
       let nestedObject = Ember.Object.extend({});
 
       let sampleObject = Ember.Controller.extend(AdvValidable, {
-        validations: [
-          {
-            fields: 'field1.nestedField',
-            validator: function (arg) {
-              return arg === 'test';
-            }
+        validations: [{
+          fields: 'field1.nestedField',
+          validator: function(arg) {
+            return arg === 'test';
           }
-        ],
+        }],
         field1: nestedObject.create({
           nestedField: 'test'
         })
@@ -200,7 +238,11 @@ describe(
           let result = vResult.result;
           expect(result).to.exist;
           expect(result.length).to.equal(1);
-          expect(result[0]).to.deep.equal({fields:'field1.nestedField', result: [], params: {}}, JSON.stringify(result[0]));
+          expect(result[0]).to.deep.equal({
+            fields: 'field1.nestedField',
+            result: [],
+            params: {}
+          }, JSON.stringify(result[0]));
 
           expect(vResult.valid).to.be.true;
           expect(vResult.target).to.deep.equal(sampleObject);
@@ -212,18 +254,16 @@ describe(
     });
 
 
-    it('validates and finds an invalid object', function (done) {
+    it('validates and finds an invalid object', function(done) {
       let service = this.subject();
 
       let sampleObject = Ember.Controller.extend(AdvValidable, {
-        validations: [
-          {
-            fields: ['field1', 'field2'],
-            validator: function (arg1, arg2) {
-              return arg1 === 'test' && arg2 === 42;
-            }
+        validations: [{
+          fields: ['field1', 'field2'],
+          validator: function(arg1, arg2) {
+            return arg1 === 'test' && arg2 === 42;
           }
-        ],
+        }],
         field1: 'test',
         field2: 43
       }).create();
@@ -235,7 +275,11 @@ describe(
           let result = vResult.result;
           expect(result).to.exist;
           expect(result.length).to.equal(1);
-          expect(result[0]).to.deep.equal({fields:['field1', 'field2'], result: [false], params: {}}, JSON.stringify(result[0]));
+          expect(result[0]).to.deep.equal({
+            fields: ['field1', 'field2'],
+            result: [false],
+            params: {}
+          }, JSON.stringify(result[0]));
 
           expect(vResult.valid).to.be.false;
           expect(vResult.target).to.deep.equal(sampleObject);
@@ -248,22 +292,20 @@ describe(
     });
 
 
-    it('validates one field + module validator', function (done) {
+    it('validates one field + module validator', function(done) {
       let service = this.subject();
 
       let sampleObject = Ember.Controller.extend(AdvValidable, {
-        validations: [
-          {
-            fields: 'field1',
-            validator: 'test-validator'
-          }
-        ],
+        validations: [{
+          fields: 'field1',
+          validator: 'test-validator'
+        }],
         field1: 'test'
       }).create();
 
 
       let testValidator = Ember.Service.extend(AdvValidator, {
-        validate: function () {
+        validate: function() {
           return true;
         },
         isAsync: false
@@ -278,7 +320,11 @@ describe(
           let result = vResult.result;
           expect(result).to.exist;
           expect(result.length).to.equal(1);
-          expect(result[0]).to.deep.equal({fields:'field1', result: [], params: {}}, JSON.stringify(result[0]));
+          expect(result[0]).to.deep.equal({
+            fields: 'field1',
+            result: [],
+            params: {}
+          }, JSON.stringify(result[0]));
 
           expect(vResult.valid).to.be.true;
           expect(vResult.target).to.deep.equal(sampleObject);
@@ -290,22 +336,20 @@ describe(
     });
 
 
-    it('validates one field + nested module validator', function (done) {
+    it('validates one field + nested module validator', function(done) {
       let service = this.subject();
 
       let sampleObject = Ember.Controller.extend(AdvValidable, {
-        validations: [
-          {
-            fields: 'field1',
-            validator: 'someDirectory/test-validator'
-          }
-        ],
+        validations: [{
+          fields: 'field1',
+          validator: 'someDirectory/test-validator'
+        }],
         field1: 'test'
       }).create();
 
 
       let testValidator = Ember.Service.extend(AdvValidator, {
-        validate: function () {
+        validate: function() {
           return true;
         },
         isAsync: false
@@ -320,7 +364,11 @@ describe(
           let result = vResult.result;
           expect(result).to.exist;
           expect(result.length).to.equal(1);
-          expect(result[0]).to.deep.equal({fields:'field1', result: [], params: {}}, JSON.stringify(result[0]));
+          expect(result[0]).to.deep.equal({
+            fields: 'field1',
+            result: [],
+            params: {}
+          }, JSON.stringify(result[0]));
           done();
         })
         .catch((e) => {
@@ -329,24 +377,22 @@ describe(
     });
 
 
-    it('validates one field + module validator - async', function (done) {
+    it('validates one field + module validator - async', function(done) {
       let service = this.subject();
 
       let sampleObject = Ember.Controller.extend(AdvValidable, {
-        validations: [
-          {
-            fields: 'field1',
-            validator: 'test-validator'
-          }
-        ],
+        validations: [{
+          fields: 'field1',
+          validator: 'test-validator'
+        }],
         field1: 'test'
       }).create();
 
 
       let testValidator = Ember.Service.extend(AdvValidator, {
-        validate: function () {
+        validate: function() {
           let promise = new Ember.RSVP.Promise((resolve) => {
-            setTimeout(function () {
+            setTimeout(function() {
               resolve(true);
             }, 100);
           });
@@ -364,7 +410,11 @@ describe(
           let result = vResult.result;
           expect(result).to.exist;
           expect(result.length).to.equal(1);
-          expect(result[0]).to.deep.equal({fields:'field1', result: [], params: {}}, JSON.stringify(result[0]));
+          expect(result[0]).to.deep.equal({
+            fields: 'field1',
+            result: [],
+            params: {}
+          }, JSON.stringify(result[0]));
           done();
         })
         .catch((e) => {
@@ -373,25 +423,23 @@ describe(
         });
     });
 
-    it('passes validator parameters', function (done) {
+    it('passes validator parameters', function(done) {
       let service = this.subject();
 
       let sampleObject = Ember.Controller.extend(AdvValidable, {
-        validations: [
-          {
-            fields: 'field1',
-            validator: 'someDirectory/test-validator',
-            params: {
-              hello: 'world!'
-            }
+        validations: [{
+          fields: 'field1',
+          validator: 'someDirectory/test-validator',
+          params: {
+            hello: 'world!'
           }
-        ],
+        }],
         field1: 'test'
       }).create();
 
 
       let testValidator = Ember.Service.extend(AdvValidator, {
-        validate: function () {
+        validate: function() {
           return true;
         },
         isAsync: false
