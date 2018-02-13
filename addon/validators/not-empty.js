@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { isPresent } from '@ember/utils';
+import Service from '@ember/service';
 import AdvValidator from '../mixins/adv-validator';
 
 /**
@@ -9,10 +10,10 @@ import AdvValidator from '../mixins/adv-validator';
  * Configuration
  *  - trim - true/false (default: false)
  */
-export default Ember.Service.extend(AdvValidator, {
+export default Service.extend(AdvValidator, {
 
   validate: function (arg, config) {
-    if (Ember.isPresent(config) && config.trim === true){
+    if (isPresent(config) && config.trim === true){
       arg = arg.trim();
     }
     return typeof arg !== 'undefined' && arg !== null && arg !== '';

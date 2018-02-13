@@ -1,5 +1,5 @@
 /* jshint expr:true */
-import Ember from 'ember';
+import Controller from '@ember/controller';
 import { expect } from 'chai';
 import {
   describe,
@@ -16,7 +16,7 @@ describe('IsFieldValidHelper', function () {
 
   it('single field in validation result', function (done) {
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -45,7 +45,7 @@ describe('IsFieldValidHelper', function () {
   it('multiple fields in validation result', function (done) {
 
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -81,7 +81,7 @@ describe('IsFieldValidHelper', function () {
 
   it('multiple fields in validation result - failed validation', function (done) {
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -116,7 +116,7 @@ describe('IsFieldValidHelper', function () {
 
   it('multiple fields in validation result - failed validation - with validation message', function (done) {
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -152,7 +152,7 @@ describe('IsFieldValidHelper', function () {
 
   it('single field in multiple validation definitions - validation success', function (done) {
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -187,7 +187,7 @@ describe('IsFieldValidHelper', function () {
 
   it('single field in multiple validation definitions - validation failed', function (done) {
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',

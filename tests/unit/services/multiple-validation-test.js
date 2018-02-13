@@ -1,8 +1,9 @@
+import Service from '@ember/service';
+import Controller from '@ember/controller';
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
 import { setupTest } from 'ember-mocha';
 
-import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 import AdvValidator from 'ember-advanced-validations/mixins/adv-validator';
 
@@ -18,7 +19,7 @@ describe(
     it('validates one field per validation + direct function', function(done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -61,7 +62,7 @@ describe(
     it('validates one field per validation + module & direct validator ', function(done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -79,7 +80,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator,{
+      let testValidator = Service.extend(AdvValidator,{
         validate: function(){
           return true;
         },

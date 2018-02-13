@@ -1,9 +1,11 @@
-import Ember from 'ember';
-import {isFieldValid} from 'ember-advanced-validations/helpers/is-field-valid';
+import { isPresent } from '@ember/utils';
+import { inject as service } from '@ember/service';
+import Controller from '@ember/controller';
+import { isFieldValid } from 'ember-advanced-validations/helpers/is-field-valid';
 
-export default Ember.Controller.extend({
+export default Controller.extend({
 
-  validationService: Ember.inject.service('adv-validation-manager'),
+  validationService: service('adv-validation-manager'),
 
   valueSimple: null,
   simpleValidation: 'unknown',
@@ -32,7 +34,7 @@ export default Ember.Controller.extend({
     {
       fields: 'valueSimple',
       validator: function (value) {
-        return Ember.isPresent(value);
+        return isPresent(value);
       }
     },
 
@@ -79,7 +81,7 @@ export default Ember.Controller.extend({
   ],
 
   _getOrElse(value, defaultValue){
-    if (Ember.isPresent(value)) {
+    if (isPresent(value)) {
       return value;
     } else {
       return defaultValue;

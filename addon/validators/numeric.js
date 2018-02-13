@@ -1,13 +1,14 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import Service from '@ember/service';
 import AdvValidator from '../mixins/adv-validator';
 
 /**
  * Checks if field contains just digits and no letters.
  */
-export default Ember.Service.extend(AdvValidator, {
+export default Service.extend(AdvValidator, {
 
   validate: function (field) {
-    return Ember.$.isNumeric(field);
+    return $.isNumeric(field);
   },
 
   isAsync: false,

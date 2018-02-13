@@ -1,4 +1,6 @@
-import Ember from 'ember';
+import { assert } from '@ember/debug';
+import { isNone, isPresent } from '@ember/utils';
+import Service from '@ember/service';
 import AdvValidator from '../mixins/adv-validator';
 
 /**
@@ -13,13 +15,13 @@ import AdvValidator from '../mixins/adv-validator';
  * All configuration parameters must be satisfied to mark the field as valid.
  * Eg. when you configure maxLength=5, minLength=1, exactLength=3 -> field will be always invalid
  */
-export default Ember.Service.extend(AdvValidator, {
+export default Service.extend(AdvValidator, {
 
   validate: function (field, config) {
-    if (Ember.isNone(field)) {
+    if (isNone(field)) {
       field = '';
     }
-    Ember.assert('No configuration specified for length validation.', Ember.isPresent(config) && Object.keys(config).length > 0);
+    assert('No configuration specified for length validation.', isPresent(config) && Object.keys(config).length > 0);
 
     let text = field.toString();
 
@@ -27,7 +29,7 @@ export default Ember.Service.extend(AdvValidator, {
     let max = config.maxLength;
     let min = config.minLength;
 
-    Ember.assert('At least one of maxLength, minLength, exactLength configuration parameters must be specified.', Ember.isPresent(exact) || Ember.isPresent(max) || Ember.isPresent(min));
+    assert('At least one of maxLength, minLength, exactLength configuration parameters must be specified.', isPresent(exact) || isPresent(max) || isPresent(min));
 
     let result = false;
 

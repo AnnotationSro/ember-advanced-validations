@@ -1,5 +1,5 @@
 /* jshint expr:true */
-import Ember from 'ember';
+import Controller from '@ember/controller';
 import { expect } from 'chai';
 import {
   describe,
@@ -41,7 +41,7 @@ describe('GetValidationMessageHelper', function() {
 
   it('finds message for invalid validation', function (done) {
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -71,7 +71,7 @@ describe('GetValidationMessageHelper', function() {
 
   it('does not find anything because validation result is ok', function (done) {
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -107,7 +107,7 @@ describe('GetValidationMessageHelper', function() {
    * also the second validation is an array... because why not?
    *
    */
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',

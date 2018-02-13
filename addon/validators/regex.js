@@ -1,4 +1,6 @@
-import Ember from 'ember';
+import { isPresent } from '@ember/utils';
+import { assert } from '@ember/debug';
+import Service from '@ember/service';
 import AdvValidator from '../mixins/adv-validator';
 
 /**
@@ -15,13 +17,13 @@ import AdvValidator from '../mixins/adv-validator';
  *  "flags": "gi"
  *  }
  */
-export default Ember.Service.extend(AdvValidator, {
+export default Service.extend(AdvValidator, {
 
   validate: function (field, config) {
 
-    Ember.assert(
+    assert(
       "Regex validation does not contain necessary configuration parameter 'regex'",
-      Ember.isPresent(config) && Ember.isPresent(config.regex)
+      isPresent(config) && isPresent(config.regex)
     );
 
     if (typeof field === "undefined" || field === null){

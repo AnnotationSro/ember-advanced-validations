@@ -1,9 +1,9 @@
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
 
 /*
  * Mixin that all controllers/components should implement, if they want to make use of this AdvancedValidations addon
  */
-export default Ember.Mixin.create({
+export default Mixin.create({
   validations: []
     /**
 

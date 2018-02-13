@@ -1,8 +1,10 @@
+import Service from '@ember/service';
+import { later } from '@ember/runloop';
+import Controller from '@ember/controller';
 import { expect } from 'chai';
 import { setupTest } from 'ember-mocha';
 import { beforeEach, it, describe } from 'mocha';
 
-import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 import AdvValidator from 'ember-advanced-validations/mixins/adv-validator';
 import configuration from 'ember-advanced-validations/configuration';
@@ -25,7 +27,7 @@ describe(
       let service = this.subject();
       let hasParams = false;
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -62,7 +64,7 @@ describe(
     it('validates one field - twice', function (done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -88,7 +90,7 @@ describe(
 
       //trigger runtime validation
       sampleObject.set('field1', 'hello');
-      Ember.run.later(this, function () {
+      later(this, function () {
         sampleObject.set('field1', 'hello2');
       }, 200);
 
@@ -105,7 +107,7 @@ describe(
     it('validates one field - stop validation works', function (done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -143,7 +145,7 @@ describe(
     it('validates multiple fields', function (done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: ['field1', 'field2'],
@@ -180,7 +182,7 @@ describe(
 
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -192,14 +194,14 @@ describe(
       }).create();
 
 
-      let testValidator1 = Ember.Service.extend(AdvValidator, {
+      let testValidator1 = Service.extend(AdvValidator, {
         validate: function () {
           return true;
         },
         isAsync: false
       });
 
-      let testValidator2 = Ember.Service.extend(AdvValidator, {
+      let testValidator2 = Service.extend(AdvValidator, {
         validate: function () {
           return false;
         },
@@ -230,7 +232,7 @@ describe(
 
       let assertValidatorRun = 0;
 
-      var validationObject = Ember.Controller.extend(AdvValidable, {
+      var validationObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -245,7 +247,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
           assertValidatorRun++;
           return false;
@@ -279,7 +281,7 @@ describe(
 
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -305,7 +307,7 @@ describe(
 
       //trigger runtime validation
       sampleObject.set('field1', 'hello');
-      Ember.run.later(this, function () {
+      later(this, function () {
         sampleObject.set('field1', 'hello2');
       }, 150);
 
@@ -323,7 +325,7 @@ describe(
 
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -352,7 +354,7 @@ describe(
 
       //trigger runtime validation
       sampleObject.set('field1', 'hello');
-      Ember.run.later(this, function () {
+      later(this, function () {
         sampleObject.set('field1', 'hello2');
       }, 150);
 

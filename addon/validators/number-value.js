@@ -1,4 +1,7 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import { isPresent } from '@ember/utils';
+import { assert } from '@ember/debug';
+import Service from '@ember/service';
 import AdvValidator from '../mixins/adv-validator';
 
 /**
@@ -12,16 +15,16 @@ import AdvValidator from '../mixins/adv-validator';
  * At least on of these configuration parameters must be specified.
  * On case both parameters are specified, field must satisfy both restrictions.
  */
-export default Ember.Service.extend(AdvValidator, {
+export default Service.extend(AdvValidator, {
 
   validate: function (field, config) {
 
-    Ember.assert(
+    assert(
       "At least one configuration parameter of maxValue or minValue must be specified for number-value validator",
-      Ember.isPresent(config) && (Ember.isPresent(config.maxValue) || Ember.isPresent(config.minValue))
+      isPresent(config) && (isPresent(config.maxValue) || isPresent(config.minValue))
     );
 
-    if (!Ember.$.isNumeric(field)){
+    if (!$.isNumeric(field)){
       return false;
     }
 

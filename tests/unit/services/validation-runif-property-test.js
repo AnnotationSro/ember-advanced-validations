@@ -1,8 +1,9 @@
+import Service from '@ember/service';
+import Controller from '@ember/controller';
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
 import { setupTest } from 'ember-mocha';
 
-import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 import AdvValidator from 'ember-advanced-validations/mixins/adv-validator';
 
@@ -20,7 +21,7 @@ describe(
 
       let assertValidatorRun = 0;
 
-      var validationObject = Ember.Controller.extend(AdvValidable, {
+      var validationObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -34,7 +35,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
           assertValidatorRun++;
           return false;
@@ -66,7 +67,7 @@ describe(
       let assertValidatorRun = 0;
       let hasParams = false;
 
-      var validationObject = Ember.Controller.extend(AdvValidable, {
+      var validationObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -80,7 +81,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function (field, config, params) {
           if (params && params.hello === 'world'){
             hasParams = true;
@@ -116,7 +117,7 @@ describe(
 
       let assertValidatorRun = 0;
 
-      var validationObject = Ember.Controller.extend(AdvValidable, {
+      var validationObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -130,7 +131,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
           assertValidatorRun++;
           return false;
@@ -160,7 +161,7 @@ describe(
 
       let assertValidatorRun = 0;
 
-      var validationObject = Ember.Controller.extend(AdvValidable, {
+      var validationObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -176,7 +177,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
           assertValidatorRun++;
           return false;
@@ -207,7 +208,7 @@ describe(
 
       let assertValidatorRun = 0;
 
-      var validationObject = Ember.Controller.extend(AdvValidable, {
+      var validationObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -222,7 +223,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
           assertValidatorRun++;
           return false;
@@ -254,7 +255,7 @@ describe(
       let hasParams = false;
       let hasConfig = false;
 
-      var validationObject = Ember.Controller.extend(AdvValidable, {
+      var validationObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -280,7 +281,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
           assertValidatorRun++;
           return false;
@@ -316,7 +317,7 @@ describe(
       let assertValidatorRun = 0;
       let hasParams = false;
 
-      var validationObject = Ember.Controller.extend(AdvValidable, {
+      var validationObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -339,7 +340,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function (params) {
           if (params && params.hello === 'world'){
             hasParams = true;

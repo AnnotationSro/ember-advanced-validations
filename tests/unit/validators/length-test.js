@@ -1,8 +1,8 @@
+import Controller from '@ember/controller';
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
-import { setupTest } from 'ember-mocha';
 
-import Ember from 'ember';
+import { setupTest } from 'ember-mocha';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 
 
@@ -14,7 +14,7 @@ describe('Unit : Validator : String length validator', function () {
   it('valid object - exact length', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -46,7 +46,7 @@ describe('Unit : Validator : String length validator', function () {
   it('valid object - number field - exact length', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -79,7 +79,7 @@ describe('Unit : Validator : String length validator', function () {
   it('invalid object - number field - exact length', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -111,7 +111,7 @@ describe('Unit : Validator : String length validator', function () {
   it('invalid object - exact length', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -144,7 +144,7 @@ describe('Unit : Validator : String length validator', function () {
   it('valid object - min length', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -176,7 +176,7 @@ describe('Unit : Validator : String length validator', function () {
   it('invalid object - min length', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -208,7 +208,7 @@ describe('Unit : Validator : String length validator', function () {
   it('valid object - max length', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -240,7 +240,7 @@ describe('Unit : Validator : String length validator', function () {
   it('invalid object - max length', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -273,7 +273,7 @@ describe('Unit : Validator : String length validator', function () {
   it('valid object - exact + min length', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -306,7 +306,7 @@ describe('Unit : Validator : String length validator', function () {
   it('invalid object - exact + min length (min not satisfied)', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',

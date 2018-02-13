@@ -1,12 +1,14 @@
 /*jshint unused:false*/
-import Ember from 'ember';
+import { assert } from '@ember/debug';
+
+import Mixin from '@ember/object/mixin';
 
 /**
  * An instance of AdvancedValidator
  */
-export default Ember.Mixin.create({
+export default Mixin.create({
   validate(){
-    Ember.assert("You have to override this method with your own validation alogrithm");
+    assert("You have to override this method with your own validation alogrithm");
   },
 
   isAsync: false,

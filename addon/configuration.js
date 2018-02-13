@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { isPresent } from '@ember/utils';
+import { assert } from '@ember/debug';
 
 const CONFIG_PROPERTIES = {
   i18n_enabled: false,
@@ -6,7 +7,7 @@ const CONFIG_PROPERTIES = {
 };
 
 function getConfigValue(property){
-  Ember.assert(`Ember-advanced-validations configuration property is null or undefined`, Ember.isPresent(property));
+  assert(`Ember-advanced-validations configuration property is null or undefined`, isPresent(property));
   return CONFIG_PROPERTIES[property];
 }
 
@@ -22,7 +23,7 @@ export default {
   },
 
   setProperty(propertyName, value){
-    Ember.assert(`Ember-advanced-validations configuration property is null or undefined`, Ember.isPresent(propertyName));
+    assert(`Ember-advanced-validations configuration property is null or undefined`, isPresent(propertyName));
 
     CONFIG_PROPERTIES[propertyName] = value;
   },

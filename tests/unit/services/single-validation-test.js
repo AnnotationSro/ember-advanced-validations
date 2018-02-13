@@ -1,3 +1,7 @@
+import { Promise as EmberPromise } from 'rsvp';
+import Service from '@ember/service';
+import EmberObject from '@ember/object';
+import Controller from '@ember/controller';
 import {
   expect
 } from 'chai';
@@ -9,7 +13,6 @@ import {
   setupTest
 } from 'ember-mocha';
 
-import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 import AdvValidator from 'ember-advanced-validations/mixins/adv-validator';
 
@@ -29,7 +32,7 @@ describe(
     it('validates no field + direct function', function(done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: []
       }).create();
 
@@ -56,7 +59,7 @@ describe(
     it('validates object without validation definitions', function(done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {}).create();
+      let sampleObject = Controller.extend(AdvValidable, {}).create();
 
       let validationResult = service.validateObject(sampleObject);
       expect(validationResult).to.exist;
@@ -80,7 +83,7 @@ describe(
     it('validates one field + direct function', function(done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [{
           fields: 'field1',
           validator: function() {
@@ -112,7 +115,7 @@ describe(
     it('validates one field + custom validation ID in the result', function(done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [{
           fields: 'field1',
           customValidationId: 'hello',
@@ -145,7 +148,7 @@ describe(
     it('validates one field + direct function - with argument manipulation', function(done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [{
           fields: 'field1',
           validator: function(arg) {
@@ -180,7 +183,7 @@ describe(
     it('validates multiple fields + direct function - with argument manipulation', function(done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [{
           fields: ['field1', 'field2'],
           validator: function(arg1, arg2) {
@@ -217,9 +220,9 @@ describe(
     it('validates one nested field + direct function - with argument manipulation', function(done) {
       let service = this.subject();
 
-      let nestedObject = Ember.Object.extend({});
+      let nestedObject = EmberObject.extend({});
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [{
           fields: 'field1.nestedField',
           validator: function(arg) {
@@ -257,7 +260,7 @@ describe(
     it('validates and finds an invalid object', function(done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [{
           fields: ['field1', 'field2'],
           validator: function(arg1, arg2) {
@@ -295,7 +298,7 @@ describe(
     it('validates one field + module validator', function(done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [{
           fields: 'field1',
           validator: 'test-validator'
@@ -304,7 +307,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function() {
           return true;
         },
@@ -339,7 +342,7 @@ describe(
     it('validates one field + nested module validator', function(done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [{
           fields: 'field1',
           validator: 'someDirectory/test-validator'
@@ -348,7 +351,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function() {
           return true;
         },
@@ -380,7 +383,7 @@ describe(
     it('validates one field + module validator - async', function(done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [{
           fields: 'field1',
           validator: 'test-validator'
@@ -389,9 +392,9 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function() {
-          let promise = new Ember.RSVP.Promise((resolve) => {
+          let promise = new EmberPromise((resolve) => {
             setTimeout(function() {
               resolve(true);
             }, 100);
@@ -426,7 +429,7 @@ describe(
     it('passes validator parameters', function(done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [{
           fields: 'field1',
           validator: 'someDirectory/test-validator',
@@ -438,7 +441,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function() {
           return true;
         },

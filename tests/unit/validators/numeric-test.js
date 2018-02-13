@@ -1,8 +1,8 @@
+import Controller from '@ember/controller';
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
-import { setupTest } from 'ember-mocha';
 
-import Ember from 'ember';
+import { setupTest } from 'ember-mocha';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 
 
@@ -15,7 +15,7 @@ describe('Unit : Validator : Numeric validator', function () {
   it('valid object', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -45,7 +45,7 @@ describe('Unit : Validator : Numeric validator', function () {
   it('invalid object', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -74,7 +74,7 @@ describe('Unit : Validator : Numeric validator', function () {
   it('invalid object - null field', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -103,7 +103,7 @@ describe('Unit : Validator : Numeric validator', function () {
   it('invalid object - without regex flags (assert that next tests really make a difference)', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',

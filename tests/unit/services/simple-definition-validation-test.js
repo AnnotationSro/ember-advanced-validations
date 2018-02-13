@@ -1,8 +1,9 @@
+import Service from '@ember/service';
+import Controller from '@ember/controller';
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
 import { setupTest } from 'ember-mocha';
 
-import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 import AdvValidator from 'ember-advanced-validations/mixins/adv-validator';
 
@@ -22,7 +23,7 @@ describe(
     it('validates single field', function (done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {'test-validator': ['field1']}
         ],
@@ -30,7 +31,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
           return true;
         },
@@ -60,7 +61,7 @@ describe(
     it('validates multiple field', function (done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {'test-validator': ['field1', 'field2']}
         ],
@@ -69,7 +70,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
           return true;
         },
@@ -100,7 +101,7 @@ describe(
     it('validates multiple validators', function (done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {'test-validator': ['field1']},
           {'test-validator-invalid': ['field2']}
@@ -110,7 +111,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
           return true;
         },
@@ -119,7 +120,7 @@ describe(
 
       this.register('validator:test-validator', testValidator);
 
-      let testValidatorInvalid = Ember.Service.extend(AdvValidator, {
+      let testValidatorInvalid = Service.extend(AdvValidator, {
         validate: function () {
           return false;
         },
@@ -151,7 +152,7 @@ describe(
     it('validates multiple validators - same field', function (done) {
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {'test-validator': ['field1']},
           {'test-validator-invalid': ['field1']}
@@ -160,7 +161,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
           return true;
         },
@@ -169,7 +170,7 @@ describe(
 
       this.register('validator:test-validator', testValidator);
 
-      let testValidatorInvalid = Ember.Service.extend(AdvValidator, {
+      let testValidatorInvalid = Service.extend(AdvValidator, {
         validate: function () {
           return false;
         },

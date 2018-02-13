@@ -1,8 +1,8 @@
+import Controller from '@ember/controller';
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
-import { setupTest } from 'ember-mocha';
 
-import Ember from 'ember';
+import { setupTest } from 'ember-mocha';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 
 
@@ -14,7 +14,7 @@ describe('Unit : Validator : Numeric value validator', function () {
   it('valid object - minValue', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -47,7 +47,7 @@ describe('Unit : Validator : Numeric value validator', function () {
   it('valid object - maxValue', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -80,7 +80,7 @@ describe('Unit : Validator : Numeric value validator', function () {
   it('valid object - minValue + maxValue', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -114,7 +114,7 @@ describe('Unit : Validator : Numeric value validator', function () {
   it('invalid object - maxValue', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -147,7 +147,7 @@ describe('Unit : Validator : Numeric value validator', function () {
   it('invalid object - minValue', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -180,7 +180,7 @@ describe('Unit : Validator : Numeric value validator', function () {
   it('invalid object - minValue + maxValue', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -213,7 +213,7 @@ describe('Unit : Validator : Numeric value validator', function () {
   it('invalid object - not a number', function (done) {
     let service = this.subject();
 
-    let sampleObject = Ember.Controller.extend(AdvValidable, {
+    let sampleObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',

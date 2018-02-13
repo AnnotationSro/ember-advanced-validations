@@ -1,9 +1,11 @@
-import Ember from 'ember';
+import { helper } from '@ember/component/helper';
+import { assert } from '@ember/debug';
+import { isNone, isEmpty, isPresent } from '@ember/utils';
 
 
 export function getValidationMessage(validationResult, field) {
 
-  if (Ember.isNone(validationResult) || Ember.isEmpty(validationResult.result)){
+  if (isNone(validationResult) || isEmpty(validationResult.result)){
     return "";
   }
 
@@ -16,18 +18,18 @@ export function getValidationMessage(validationResult, field) {
     }
   })
   .filter((res)=>{
-    return Ember.isPresent(res.result); //there is something wrong/invalid in this validation
+    return isPresent(res.result); //there is something wrong/invalid in this validation
   })
   ;
 
-  if (Ember.isEmpty(invalidFields)) {
+  if (isEmpty(invalidFields)) {
     //no validation message for this field
     return "";
   }
 
   //pick only the first validation error -> this is probably not the best way to handle this (we should probably return all messages not just the first one)
   let messages = invalidFields[0].result;
-  if (Ember.isEmpty(messages)) {
+  if (isEmpty(messages)) {
     //no validation message specified
     return "";
   }
@@ -43,7 +45,7 @@ export function getValidationMessage(validationResult, field) {
 
 export function getValidationMessageHelper(params, hash) {
 
-  Ember.assert(Ember.isPresent(hash), 'ValidationResult and field not specified - assign them in helper\'s hash');
+  assert(isPresent(hash), 'ValidationResult and field not specified - assign them in helper\'s hash');
 
   let validationResult = hash.validationResult;
   let field = hash.field;
@@ -51,4 +53,4 @@ export function getValidationMessageHelper(params, hash) {
   return getValidationMessage(validationResult, field);
 }
 
-export default Ember.Helper.helper(getValidationMessageHelper);
+export default helper(getValidationMessageHelper);

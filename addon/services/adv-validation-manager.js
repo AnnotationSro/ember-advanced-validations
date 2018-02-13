@@ -1,3 +1,13 @@
+import { isHTMLSafe } from '@ember/string';
+import EmberObject from '@ember/object';
+import { isArray } from '@ember/array';
+import { debounce } from '@ember/runloop';
+import { addObserver, removeObserver } from '@ember/object/observers';
+import { Promise as EmberPromise, all } from 'rsvp';
+import { isPresent, isEmpty, isNone, typeOf } from '@ember/utils';
+import { assert } from '@ember/debug';
+import { getOwner } from '@ember/application';
+import Service from '@ember/service';
 import Ember from 'ember';
 import AdvValidator from '../mixins/adv-validator';
 import configuration from '../configuration';
@@ -9,7 +19,7 @@ class AwaitingValidation {
   }
 }
 
-export default Ember.Service.extend({
+export default Service.extend({
 
   i18n: null,
 
@@ -21,7 +31,7 @@ export default Ember.Service.extend({
       try {
         //this try/catch is a workaround for Ember Error: "registry.resolver.resolve is not a function"
         //which happens when service i18n is not registered - I guess....:(
-        let i18n = Ember.getOwner(this).lookup('service:i18n');
+        let i18n = getOwner(this).lookup('service:i18n');
         this.set('i18n', i18n);
 
       } catch (e) {
@@ -48,7 +58,7 @@ export default Ember.Service.extend({
    * @public
    */
   validateObject(emberObject, validationParams) {
-    Ember.assert("Cannot validate null or undefined object", Ember.isPresent(emberObject));
+    assert("Cannot validate null or undefined object", isPresent(emberObject));
     let allFieldValidations = emberObject.get('validations');
 
     let validationPromises = [];
@@ -60,7 +70,7 @@ export default Ember.Service.extend({
 
 
     let resolveValidationPromise, rejectValidationPromise;
-    let validationDonePromise = new Ember.RSVP.Promise((resolve, reject) => {
+    let validationDonePromise = new EmberPromise((resolve, reject) => {
       resolveValidationPromise = resolve;
       rejectValidationPromise = reject;
     });
@@ -75,13 +85,13 @@ export default Ember.Service.extend({
     let doneValidationPartialFn = this._doneValidation(resolveValidationPromise, emberObject);
 
 
-    if (Ember.isEmpty(allFieldValidations)) {
+    if (isEmpty(allFieldValidations)) {
       doneValidationPartialFn(validationResult);
       return validationDonePromise;
     }
 
     allFieldValidations = this._convertSimpleValidationDefinitions(allFieldValidations);
-    if (Ember.isEmpty(allFieldValidations)) {
+    if (isEmpty(allFieldValidations)) {
       doneValidationPartialFn(validationResult);
     } else {
 
@@ -99,7 +109,7 @@ export default Ember.Service.extend({
         }
       });
 
-      if (Ember.isEmpty(validationPromises)) {
+      if (isEmpty(validationPromises)) {
         //there are actually no validations to be run (e.g. none of them are able to run due to "runIf" restrictions)
         doneValidationPartialFn(validationResult);
       }
@@ -122,8 +132,8 @@ export default Ember.Service.extend({
 
    */
   startRealtimeValidation(emberObject, onValidationCallback, validationParams) {
-    Ember.assert("Cannot validate null or undefined object", Ember.isPresent(emberObject));
-    Ember.assert("It seems you forgot to specify 'onValidationCallback'", Ember.isPresent(onValidationCallback));
+    assert("Cannot validate null or undefined object", isPresent(emberObject));
+    assert("It seems you forgot to specify 'onValidationCallback'", isPresent(onValidationCallback));
 
     let allFieldValidations = emberObject.get('validations');
     allFieldValidations = this._convertSimpleValidationDefinitions(allFieldValidations);
@@ -137,7 +147,7 @@ export default Ember.Service.extend({
       let fields = validationDef['fields'];
 
       let debounceTime = configuration.getRealtimeDebounceMsec();
-      if (Ember.isPresent(validationDef['config']) && validationDef['config']['realtime_debounce']) {
+      if (isPresent(validationDef['config']) && validationDef['config']['realtime_debounce']) {
         debounceTime = validationDef['config']['realtime_debounce'];
       }
 
@@ -147,7 +157,7 @@ export default Ember.Service.extend({
         let awaitingValidations = [];
         let validationResult = [];
 
-        let validationPromise = new Ember.RSVP.Promise((resolve, reject) => {
+        let validationPromise = new EmberPromise((resolve, reject) => {
           let doneValidationPartialFn = this._doneValidation(resolve, emberObject);
           this._runSingleValidation(emberObject, validationParams, validationDef, doneValidationPartialFn, reject, validationResultMap, validationPromises, awaitingValidations, validationResult);
         });
@@ -165,15 +175,15 @@ export default Ember.Service.extend({
 
       //register observers
       fields.forEach((f) => {
-        Ember.addObserver(emberObject, f, this, () => {
-          Ember.run.debounce(this, validationFn, debounceTime);
+        addObserver(emberObject, f, this, () => {
+          debounce(this, validationFn, debounceTime);
         });
       });
 
       //create an array of functions that will be called to unregister/remove observers
       return fields.map((f) => {
         return () => {
-          Ember.removeObserver(emberObject, f, this, validationFn);
+          removeObserver(emberObject, f, this, validationFn);
         };
 
       });
@@ -213,12 +223,12 @@ export default Ember.Service.extend({
     return allFieldValidations.concat(advancedDefinitions);
 
     function isValidationSimple(validation) {
-      return Ember.isEmpty(validation['fields']);
+      return isEmpty(validation['fields']);
     }
 
     function convertSingleSimpleValidation(simpleDefinition) {
       let keys = Object.keys(simpleDefinition);
-      Ember.assert('Validation definition invalid format.', Ember.isPresent(keys) && keys.length === 1);
+      assert('Validation definition invalid format.', isPresent(keys) && keys.length === 1);
 
       let validatorName = keys[0];
       let simpleFields = simpleDefinition[keys[0]];
@@ -244,7 +254,7 @@ export default Ember.Service.extend({
 
     function _isObjectValid(validationResult) {
       return validationResult.every((res) => {
-        return Ember.isEmpty(res.result);
+        return isEmpty(res.result);
       });
     }
   },
@@ -257,7 +267,7 @@ export default Ember.Service.extend({
   },
 
   _validationDependenciesResolved(dependsOnValidations, validationResultMap) {
-    if (Ember.isEmpty(dependsOnValidations)) {
+    if (isEmpty(dependsOnValidations)) {
       return true;
     } else {
       if (Array.isArray(dependsOnValidations)) {
@@ -279,10 +289,10 @@ export default Ember.Service.extend({
     let runIfFields = fieldValidation['runIf'];
     let validatorId = fieldValidation['id'];
 
-    Ember.assert('No fields defined for validation', Ember.isPresent(fields));
-    Ember.assert('No validator defined for validation', Ember.isPresent(validatorArray));
+    assert('No fields defined for validation', isPresent(fields));
+    assert('No validator defined for validation', isPresent(validatorArray));
 
-    if (Ember.isNone(fields) || Ember.isNone(fields)) {
+    if (isNone(fields) || isNone(fields)) {
       rejectValidationPromise();
       return;
     }
@@ -303,9 +313,9 @@ export default Ember.Service.extend({
 
 
       //remember the result of validation
-      if (Ember.isPresent(validatorId)) {
-        Ember.assert(`There are multiple validators with the same ID ${validatorId} - this may cause nondeterministic behaviour.`, Ember.isNone(validationResultMap[validatorId]));
-        validationResultMap[validatorId] = Ember.isEmpty(result.result); //when result is empty, validation is OK
+      if (isPresent(validatorId)) {
+        assert(`There are multiple validators with the same ID ${validatorId} - this may cause nondeterministic behaviour.`, isNone(validationResultMap[validatorId]));
+        validationResultMap[validatorId] = isEmpty(result.result); //when result is empty, validation is OK
       }
 
       //remove currently done validation from list of running field validations
@@ -315,7 +325,7 @@ export default Ember.Service.extend({
       }
 
       let validationsToBeRun = this._findAvailableWaitingValidations(awaitingValidations, validationResultMap);
-      if (Ember.isEmpty(validationsToBeRun) && Ember.isEmpty(validationPromises)) {
+      if (isEmpty(validationsToBeRun) && isEmpty(validationPromises)) {
         //there are no running and no awaiting validations => this is the end, my friend
         resolveValidationPromise(validationResult);
       } else {
@@ -351,7 +361,7 @@ export default Ember.Service.extend({
   _createSingleFieldValidation: function(fields, emberObject, validationParams, validatorArray, fieldValidation, validationMessage) {
     //get values for validation field/fields
     let validatorFields = [];
-    if (Ember.isArray(fields)) {
+    if (isArray(fields)) {
       validatorFields = fields.map((f) => emberObject.get(f));
     } else {
       validatorFields.push(emberObject.get(fields));
@@ -371,10 +381,10 @@ export default Ember.Service.extend({
     });
 
 
-    let singleFieldValidation = new Ember.RSVP.Promise((resolve, reject) => {
+    let singleFieldValidation = new EmberPromise((resolve, reject) => {
 
       //check if all validations on this field are true - only then resolve this field as valid
-      new Ember.RSVP.all(fieldValidations).then((result) => {
+      new all(fieldValidations).then((result) => {
         resolve({
           fields: fieldValidation.customValidationId || fields,
           result: result.filter((r) => r !== true),
@@ -388,7 +398,7 @@ export default Ember.Service.extend({
   },
 
   _canRunValidation(validationObject, validationParams, fieldConfig, conditionFields) {
-    if (Ember.isEmpty(conditionFields)) {
+    if (isEmpty(conditionFields)) {
       return true;
     }
     if (!Array.isArray(conditionFields)) {
@@ -415,29 +425,29 @@ export default Ember.Service.extend({
    */
   _getValidationDefinition(validatorDef) {
 
-    if (Ember.typeOf(validatorDef) === 'string') {
+    if (typeOf(validatorDef) === 'string') {
       //it is a name of a Validation rather than a direct validation function
       return this._getValidatorFromModule(validatorDef);
     }
-    if (Ember.typeOf(validatorDef) === 'function') {
+    if (typeOf(validatorDef) === 'function') {
       //it is a direct function that should be executed
-      let validator = Ember.Object.extend(AdvValidator, {})
+      let validator = EmberObject.extend(AdvValidator, {})
         .create({
           isAsync: false,
           validate: validatorDef
         });
       return validator;
     }
-    Ember.assert(`Cannot determine a validation function for: ${validatorDef}`);
+    assert(`Cannot determine a validation function for: ${validatorDef}`);
   },
 
   _runValidation(validator, fields, config, userDefinedValidationMessage, validationParams) {
 
-    Ember.assert("Cannot determine if validation is async or not - please override 'isAsync' property in your validator", Ember.isPresent(validator.get('isAsync')));
+    assert("Cannot determine if validation is async or not - please override 'isAsync' property in your validator", isPresent(validator.get('isAsync')));
 
     let validationPromise;
     if (validator.get('isAsync')) {
-      validationPromise = new Ember.RSVP.Promise((resolve, reject) => {
+      validationPromise = new EmberPromise((resolve, reject) => {
         validator.validate(config, ...fields, validationParams).then((result) => {
             this._handleValidationResult(result, fields, config, validator, userDefinedValidationMessage, resolve, reject);
           })
@@ -445,7 +455,7 @@ export default Ember.Service.extend({
 
       });
     } else {
-      validationPromise = new Ember.RSVP.Promise((resolve, reject) => {
+      validationPromise = new EmberPromise((resolve, reject) => {
         try {
           var result = validator.validate(...fields, config, validationParams);
           this._handleValidationResult(result, fields, config, validator, userDefinedValidationMessage, resolve, reject);
@@ -458,10 +468,10 @@ export default Ember.Service.extend({
   },
 
   _getValidatorFromModule(validatorModuleName) {
-    let validatorModule = Ember.getOwner(this).lookup(`validator:${validatorModuleName}`);
+    let validatorModule = getOwner(this).lookup(`validator:${validatorModuleName}`);
 
-    Ember.assert(`Validator "validators:${validatorModuleName}" does not exist.`, Ember.isPresent(validatorModule));
-    Ember.assert(`Validator ${validatorModuleName} does not implement mixin AdvValidator`, AdvValidator.detect(validatorModule));
+    assert(`Validator "validators:${validatorModuleName}" does not exist.`, isPresent(validatorModule));
+    assert(`Validator ${validatorModuleName} does not implement mixin AdvValidator`, AdvValidator.detect(validatorModule));
 
     return validatorModule;
   },
@@ -473,7 +483,7 @@ export default Ember.Service.extend({
       if (result === false) {
 
         let message = userDefinedValidationMessage || validator.validationMessage;
-        if (Ember.isPresent(message)) {
+        if (isPresent(message)) {
           resolve(this._formatValidationMessage(message, fields, config, this.get('i18n')));
         } else {
           resolve(false);
@@ -495,9 +505,9 @@ export default Ember.Service.extend({
   _formatValidationMessage(validationMessage, args, config, i18n) {
     let formatted;
 
-    if (Ember.isPresent(i18n)) {
+    if (isPresent(i18n)) {
       formatted = i18n.t(validationMessage);
-      if (Ember.String.isHTMLSafe(formatted)) {
+      if (isHTMLSafe(formatted)) {
         formatted = formatted.toString();
       }
     } else {

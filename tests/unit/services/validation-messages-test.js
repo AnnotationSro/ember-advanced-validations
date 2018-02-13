@@ -1,8 +1,11 @@
+import { Promise as EmberPromise } from 'rsvp';
+import Service from '@ember/service';
+import Controller from '@ember/controller';
+import { getOwner } from '@ember/application';
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
 import { setupTest } from 'ember-mocha';
 
-import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 import AdvValidator from 'ember-advanced-validations/mixins/adv-validator';
 import EnTranslations from 'ember-advanced-validations/locales/en/translations';
@@ -36,11 +39,11 @@ describe(
      */
 
     it('validates one field + module validator - custom validation message - translated', function (done) {
-      initTestTranslations(Ember.getOwner(this));
+      initTestTranslations(getOwner(this));
 
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -51,7 +54,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
           return false;
         },
@@ -78,11 +81,11 @@ describe(
 
 
     it('validates one field + module validator - custom validation message - not translated', function (done) {
-      initTestTranslations(Ember.getOwner(this));
+      initTestTranslations(getOwner(this));
 
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -93,7 +96,7 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
           return false;
         },
@@ -122,11 +125,11 @@ describe(
     });
 
     it('validates one field + module validator - async - default validation message', function (done) {
-      initTestTranslations(Ember.getOwner(this));
+      initTestTranslations(getOwner(this));
 
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -137,9 +140,9 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
-          let promise = new Ember.RSVP.Promise((resolve) => {
+          let promise = new EmberPromise((resolve) => {
             setTimeout(function () {
               resolve(false);
             }, 100);
@@ -168,11 +171,11 @@ describe(
     });
 
     it('validates one field + module validator - async - custom validation message', function (done) {
-      initTestTranslations(Ember.getOwner(this));
+      initTestTranslations(getOwner(this));
 
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -183,9 +186,9 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
-          let promise = new Ember.RSVP.Promise((resolve) => {
+          let promise = new EmberPromise((resolve) => {
             setTimeout(function () {
               resolve(false);
             }, 100);
@@ -216,11 +219,11 @@ describe(
     });
 
     it('formats validation message', function (done) {
-      initTestTranslations(Ember.getOwner(this));
+      initTestTranslations(getOwner(this));
 
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: ['field1', 'field2'],
@@ -232,9 +235,9 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
-          let promise = new Ember.RSVP.Promise((resolve) => {
+          let promise = new EmberPromise((resolve) => {
             setTimeout(function () {
               resolve(false);
             }, 100);
@@ -270,11 +273,11 @@ describe(
     });
 
     it('formats validation message - with configuration parameters', function (done) {
-      initTestTranslations(Ember.getOwner(this));
+      initTestTranslations(getOwner(this));
 
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: ['field1', 'field2'],
@@ -289,9 +292,9 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
-          let promise = new Ember.RSVP.Promise((resolve) => {
+          let promise = new EmberPromise((resolve) => {
             setTimeout(function () {
               resolve(false);
             }, 100);
@@ -327,11 +330,11 @@ describe(
     });
 
     it('overrides default validation message', function (done) {
-      initTestTranslations(Ember.getOwner(this));
+      initTestTranslations(getOwner(this));
 
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: ['field1', 'field2'],
@@ -344,9 +347,9 @@ describe(
       }).create();
 
 
-      let testValidator = Ember.Service.extend(AdvValidator, {
+      let testValidator = Service.extend(AdvValidator, {
         validate: function () {
-          let promise = new Ember.RSVP.Promise((resolve) => {
+          let promise = new EmberPromise((resolve) => {
             setTimeout(function () {
               resolve(false);
             }, 100);

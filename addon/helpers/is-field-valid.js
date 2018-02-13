@@ -1,16 +1,18 @@
-import Ember from 'ember';
+import { helper } from '@ember/component/helper';
+import { assert } from '@ember/debug';
+import { isNone, isPresent, isEmpty } from '@ember/utils';
 
 export function isFieldValid(validationResult, field){
-  if (Ember.isNone(validationResult) || Ember.isNone(validationResult.result)){
+  if (isNone(validationResult) || isNone(validationResult.result)){
     return true;
   }
-  Ember.assert('Field to get validation result is not provided for isFieldValid helper', Ember.isPresent(field));
+  assert('Field to get validation result is not provided for isFieldValid helper', isPresent(field));
 
   let fieldResultList = validationResult.result.filter((result) => {
     return isSingleFieldValidated(result.fields, field);
   });
 
-  if (Ember.isEmpty(fieldResultList)){
+  if (isEmpty(fieldResultList)){
     return true;
   }
 
@@ -27,7 +29,7 @@ export function isFieldValid(validationResult, field){
 
 export function isFieldValidHelper(params, hash) {
 
-  Ember.assert(Ember.isPresent(hash), 'ValidationResult and field not specified - assign them in helper\'s hash');
+  assert(isPresent(hash), 'ValidationResult and field not specified - assign them in helper\'s hash');
 
 
   let validationResult = hash.validationResult;
@@ -38,10 +40,10 @@ export function isFieldValidHelper(params, hash) {
 
 function isSingleFieldValidated(field, resultFields) {
   if (Array.isArray(field)) {
-    return Ember.isPresent(field.find((f)=> f === resultFields));
+    return isPresent(field.find((f)=> f === resultFields));
   } else {
     return field === resultFields;
   }
 }
 
-export default Ember.Helper.helper(isFieldValidHelper);
+export default helper(isFieldValidHelper);

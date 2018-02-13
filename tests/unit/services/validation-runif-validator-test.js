@@ -1,8 +1,9 @@
+import Service from '@ember/service';
+import Controller from '@ember/controller';
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
 import { setupTest } from 'ember-mocha';
 
-import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 import AdvValidator from 'ember-advanced-validations/mixins/adv-validator';
 
@@ -18,7 +19,7 @@ describe('Unit : Service : adv validation manager - dependsOn', function () {
 
     let assertValidatorRun = 0;
 
-    var validationObject = Ember.Controller.extend(AdvValidable, {
+    var validationObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -39,7 +40,7 @@ describe('Unit : Service : adv validation manager - dependsOn', function () {
     }).create();
 
 
-    let testValidator = Ember.Service.extend(AdvValidator, {
+    let testValidator = Service.extend(AdvValidator, {
       validate: function () {
         assertValidatorRun++;
         return true;
@@ -72,7 +73,7 @@ describe('Unit : Service : adv validation manager - dependsOn', function () {
 
     let assertValidatorRun = 0;
 
-    var validationObject = Ember.Controller.extend(AdvValidable, {
+    var validationObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -93,7 +94,7 @@ describe('Unit : Service : adv validation manager - dependsOn', function () {
     }).create();
 
 
-    let testValidator = Ember.Service.extend(AdvValidator, {
+    let testValidator = Service.extend(AdvValidator, {
       validate: function () {
         assertValidatorRun++;
         return false;
@@ -124,7 +125,7 @@ describe('Unit : Service : adv validation manager - dependsOn', function () {
 
     let assertValidatorRun = 0;
 
-    var validationObject = Ember.Controller.extend(AdvValidable, {
+    var validationObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -152,7 +153,7 @@ describe('Unit : Service : adv validation manager - dependsOn', function () {
     }).create();
 
 
-    let testValidator = Ember.Service.extend(AdvValidator, {
+    let testValidator = Service.extend(AdvValidator, {
       validate: function () {
         assertValidatorRun++;
         return true;
@@ -185,7 +186,7 @@ describe('Unit : Service : adv validation manager - dependsOn', function () {
 
     let assertValidatorRun = 0;
 
-    var validationObject = Ember.Controller.extend(AdvValidable, {
+    var validationObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',
@@ -213,7 +214,7 @@ describe('Unit : Service : adv validation manager - dependsOn', function () {
     }).create();
 
 
-    let testValidator = Ember.Service.extend(AdvValidator, {
+    let testValidator = Service.extend(AdvValidator, {
       validate: function () {
         assertValidatorRun++;
         return true;
@@ -223,7 +224,7 @@ describe('Unit : Service : adv validation manager - dependsOn', function () {
 
     this.register('validator:test-validator', testValidator);
 
-    let testValidator2 = Ember.Service.extend(AdvValidator, {
+    let testValidator2 = Service.extend(AdvValidator, {
       validate: function () {
         assertValidatorRun++;
         return false;

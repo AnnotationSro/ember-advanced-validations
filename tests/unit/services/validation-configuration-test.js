@@ -1,8 +1,10 @@
+import Service from '@ember/service';
+import EmberObject from '@ember/object';
+import Controller from '@ember/controller';
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
 import { setupTest } from 'ember-mocha';
 
-import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 import AdvValidator from 'ember-advanced-validations/mixins/adv-validator';
 
@@ -18,7 +20,7 @@ describe('Unit : Service : adv validation manager - configuration', function () 
   });
 
 
-  var plainJson_ConfigObject = Ember.Controller.extend(AdvValidable, {
+  var plainJson_ConfigObject = Controller.extend(AdvValidable, {
     validations: [
       {
         fields: 'field1',
@@ -32,12 +34,12 @@ describe('Unit : Service : adv validation manager - configuration', function () 
     field1: 'test'
   }).create();
 
-  var emberObject_ConfigObject = Ember.Controller.extend(AdvValidable, {
+  var emberObject_ConfigObject = Controller.extend(AdvValidable, {
     validations: [
       {
         fields: 'field1',
         validator: 'test-validator',
-        config: Ember.Object.extend({}).create({
+        config: EmberObject.extend({}).create({
           length: 1,
           favouriteJsFramework: 'EmberJS'
         })
@@ -57,7 +59,7 @@ describe('Unit : Service : adv validation manager - configuration', function () 
         let service = this.subject();
 
 
-        let testValidator = Ember.Service.extend(AdvValidator, {
+        let testValidator = Service.extend(AdvValidator, {
           validate: function (field, config) {
             return config.length === 1 && config.favouriteJsFramework === 'EmberJS';
           },
@@ -87,14 +89,14 @@ describe('Unit : Service : adv validation manager - configuration', function () 
     let service = this.subject();
 
 
-    let testValidator = Ember.Service.extend(AdvValidator, {
+    let testValidator = Service.extend(AdvValidator, {
       validate: function (arg, config) {
         return config['test-validator'] === 1 && arg === 'test';
       },
       isAsync: false
     });
 
-    var validationObject = Ember.Controller.extend(AdvValidable, {
+    var validationObject = Controller.extend(AdvValidable, {
       validations: [
         {
           fields: 'field1',

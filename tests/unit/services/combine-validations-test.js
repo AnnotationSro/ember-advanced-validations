@@ -1,8 +1,9 @@
+import Service from '@ember/service';
+import Controller from '@ember/controller';
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
 import { setupTest } from 'ember-mocha';
 
-import Ember from 'ember';
 import AdvValidable from 'ember-advanced-validations/mixins/adv-validable';
 import AdvValidator from 'ember-advanced-validations/mixins/adv-validator';
 
@@ -19,7 +20,7 @@ describe(
 
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -30,14 +31,14 @@ describe(
       }).create();
 
 
-      let testValidator1 = Ember.Service.extend(AdvValidator, {
+      let testValidator1 = Service.extend(AdvValidator, {
         validate: function (arg) {
           return arg.length === 'test'.length;
         },
         isAsync: false
       });
 
-      let testValidator2 = Ember.Service.extend(AdvValidator, {
+      let testValidator2 = Service.extend(AdvValidator, {
         validate: function (arg) {
           return arg === 'test';
         },
@@ -68,7 +69,7 @@ describe(
 
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -84,14 +85,14 @@ describe(
       }).create();
 
 
-      let testValidator1 = Ember.Service.extend(AdvValidator, {
+      let testValidator1 = Service.extend(AdvValidator, {
         validate: function (arg) {
           return arg.length === 'test'.length;
         },
         isAsync: false
       });
 
-      let testValidator2 = Ember.Service.extend(AdvValidator, {
+      let testValidator2 = Service.extend(AdvValidator, {
         validate: function (arg, config) {
           return arg === config.testConfiguration;
         },
@@ -122,7 +123,7 @@ describe(
 
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -136,14 +137,14 @@ describe(
       }).create();
 
 
-      let testValidator1 = Ember.Service.extend(AdvValidator, {
+      let testValidator1 = Service.extend(AdvValidator, {
         validate: function (arg, config) {
           return arg.length === 'test'.length && arg === config.testConfiguration;
         },
         isAsync: false
       });
 
-      let testValidator2 = Ember.Service.extend(AdvValidator, {
+      let testValidator2 = Service.extend(AdvValidator, {
         validate: function (arg, config) {
           return arg === config.testConfiguration;
         },
@@ -174,7 +175,7 @@ describe(
 
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -188,14 +189,14 @@ describe(
       }).create();
 
 
-      let testValidator1 = Ember.Service.extend(AdvValidator, {
+      let testValidator1 = Service.extend(AdvValidator, {
         validate: function (arg, config) {
           return arg.length === 'test'.length && arg === config.testConfiguration;
         },
         isAsync: false
       });
 
-      let testValidator2 = Ember.Service.extend(AdvValidator, {
+      let testValidator2 = Service.extend(AdvValidator, {
         validate: function (arg) {
           return arg === 'blah - this is something wrong that does not match "test"';
         },
@@ -226,7 +227,7 @@ describe(
 
       let service = this.subject();
 
-      let sampleObject = Ember.Controller.extend(AdvValidable, {
+      let sampleObject = Controller.extend(AdvValidable, {
         validations: [
           {
             fields: 'field1',
@@ -240,14 +241,14 @@ describe(
       }).create();
 
 
-      let testValidator1 = Ember.Service.extend(AdvValidator, {
+      let testValidator1 = Service.extend(AdvValidator, {
         validate: function (arg, config) {
           return arg.length === 'test'.length && arg === config.testConfiguration;
         },
         isAsync: false
       });
 
-      let testValidator2 = Ember.Service.extend(AdvValidator, {
+      let testValidator2 = Service.extend(AdvValidator, {
         validate: function (arg) {
           return arg === 'blah - this is something wrong that does not match "test"';
         },
