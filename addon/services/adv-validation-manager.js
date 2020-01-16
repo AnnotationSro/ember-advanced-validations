@@ -151,7 +151,7 @@ export default Service.extend({
         debounceTime = validationDef['config']['realtime_debounce'];
       }
 
-      let validationFn = () => {
+      const validationFn = () => {
         let validationResultMap = {};
         let validationPromises = [];
         let awaitingValidations = [];
@@ -173,17 +173,22 @@ export default Service.extend({
         fields = [fields];
       }
 
+      let observers = [];
+      const observerFn = () => {
+        debounce(this, validationFn, debounceTime);
+      };
+
       //register observers
       fields.forEach((f) => {
-        addObserver(emberObject, f, this, () => {
-          debounce(this, validationFn, debounceTime);
-        });
+        let obs = addObserver(emberObject, f, this, observerFn);
+        observers.push(obs);
       });
+
 
       //create an array of functions that will be called to unregister/remove observers
       return fields.map((f) => {
-        return () => {
-          removeObserver(emberObject, f, this, validationFn);
+        return (object = emberObject) => {
+          removeObserver(object, f, this, observerFn);
         };
 
       });
