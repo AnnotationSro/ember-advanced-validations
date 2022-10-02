@@ -18,6 +18,8 @@ A quick summary of features provided by this validation framework:
     * Custom validation messages can override default ones provided by this framework    
 * helper to check if speficiec [field is valid or retrieve its validation message](#validation-helpers)
 
+# Deprecation warning
+This addon is no longer actively developed. I will try my best to provide some kind of support for this addon, but I cannot make any promises :(
 
 # Usage
 
